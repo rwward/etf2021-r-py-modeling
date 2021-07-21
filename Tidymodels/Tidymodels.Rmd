@@ -1,0 +1,149 @@
+---
+title: "Tidymodels"
+author: "Dusty and Robert"
+date: "7/21/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+
+historical <- read_csv("01_data/historical_baseball.csv") %>% mutate(inducted = as.factor(inducted))
+eligible <- read_csv("01_data/eligible_baseball.csv") %>% mutate(inducted = as.factor(inducted))
+
+historical %>% count(last_year) %>% arrange(-last_year)
+
+```
+
+
+## Split Data
+
+```{r}
+library(tidymodels)
+
+set.seed(42)
+
+data_split <- initial_split(historical, prop = 2/3, strata = inducted)
+
+# Create data frames for the two sets:
+train_data <- training(data_split)
+test_data  <- testing(data_split)
+
+validation_set <- validation_split(data = train_data, prop = 2/3, strata = inducted)
+
+```
+
+
+## Prepare Data
+
+```{r}
+
+baseball_recipie <-
+  recipe(inducted ~ ., data = train_data) %>% 
+  update_role(player_id, new_role = "ID") %>% 
+  step_center(all_numeric()) %>% 
+  step_scale(all_numeric()) %>% 
+  step_nzv(all_numeric()) %>% 
+  step_rm("last_year")
+
+```
+
+
+## Specify Model
+
+```{r}
+lr_mod <-
+  logistic_reg(mode = "classification", penalty = tune(), mixture = 1) %>% 
+  set_engine(engine = "glmnet")
+```
+
+## Create Workflow
+
+```{r}
+baseball_workflow <-
+  workflow() %>% 
+  add_model(lr_mod) %>% 
+  add_recipe(baseball_recipie)
+
+baseball_workflow
+```
+
+## Train Model and Tune Parameters
+
+```{r}
+lr_reg_grid <- tibble(penalty = 10^seq(-4, -1, length.out = 30))
+
+lr_validation <-
+  baseball_workflow %>% 
+  # fit(data = train_data)
+  tune_grid(validation_set,
+            grid = lr_reg_grid, 
+            control = control_grid(save_pred = TRUE),
+            metrics = metric_set(roc_auc, accuracy))
+
+lr_validation %>% 
+  show_best("accuracy", n = 25) %>% 
+  arrange(penalty) %>% as.data.frame() %>% 
+  ggplot(aes(x = penalty, y = mean)) +
+  geom_point() +
+  geom_line() +
+  scale_x_log10()
+
+lr_best <-
+  lr_validation %>% 
+  collect_metrics() %>% 
+  filter(.metric == "accuracy") %>% 
+  slice(10)
+
+lr_validation %>% 
+  collect_predictions(parameters = lr_best) %>% 
+  roc_curve(inducted, .pred_0) %>% 
+  autoplot()
+
+```
+
+
+## Last model
+
+```{r}
+last_lr_mod <-
+  logistic_reg(mode = "classification", penalty = lr_best$penalty, mixture = 1) %>% 
+  set_engine(engine = "glmnet")
+
+last_lr_workflow <-
+  baseball_workflow %>%
+  finalize_workflow(lr_best)
+
+last_lr_fit <-
+  last_lr_workflow %>% 
+  last_fit(data_split)
+
+last_lr_fit %>% 
+  collect_metrics()
+
+last_lr_fit %>% 
+  collect_predictions() %>% 
+  roc_curve(inducted, .pred_0) %>% 
+  autoplot()
+
+
+```
+
+## build model on all data
+
+
+```{r}
+last_lr_workflow %>% 
+  fit(data = historical) %>%
+  # pull_workflow_fit() %>% tidy()
+  predict(eligible, type = "prob") %>% 
+  bind_cols(eligible) %>% 
+  arrange(-.pred_1) %>% 
+  filter(.pred_1 >.4) %>% 
+  print(n = Inf)
+```
+

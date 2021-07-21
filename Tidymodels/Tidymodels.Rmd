@@ -7,13 +7,15 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+
 ```
 
 ```{r}
 library(tidyverse)
 
 historical <- read_csv("01_data/historical_baseball.csv") %>% mutate(inducted = as.factor(inducted))
-eligible <- read_csv("01_data/eligible_baseball.csv") %>% mutate(inducted = as.factor(inducted))
+eligible <- read_csv("01_data/eligible_baseball.csv") #%>% mutate(inducted = as.factor(inducted))
 
 historical %>% count(last_year) %>% arrange(-last_year)
 

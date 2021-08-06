@@ -688,6 +688,7 @@ last_lr_workflow</code></pre>
 ## 11 cs            0.182  0.000530
 ## 12 bb            0.224  0.000530
 ## 13 so            0.0410 0.000530</code></pre>
+<p>How did we do?</p>
 <pre class="r"><code>last_lr_workflow %&gt;% 
   fit(data = historical) %&gt;%
   predict(eligible, type = &quot;prob&quot;) %&gt;% 

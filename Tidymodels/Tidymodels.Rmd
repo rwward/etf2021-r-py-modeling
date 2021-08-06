@@ -290,6 +290,7 @@ last_lr_workflow %>%
   pull_workflow_fit() %>% tidy()
 ```
 
+How did we do?
 
 ```{r}
 last_lr_workflow %>% 

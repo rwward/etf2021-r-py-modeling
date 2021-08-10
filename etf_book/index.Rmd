@@ -1,0 +1,117 @@
+---
+title: "Modeling in R and Python"
+author: "MAJ Dusty Turner and Robert Ward"
+date: "7 DEC 2021"
+output: bookdown::gitbook
+# output:
+#   bookdown::html_book:
+#     theme: united
+site: bookdown::bookdown_site
+always_allow_html: yes
+documentclass: memoir
+classoption: oneside
+# geometry: margin=.75in
+---
+
+```{r setup, include=FALSE, cache = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FALSE)
+```
+
+# Class Introduction
+
+<center>
+![](img/caa_seal.png){ width=25% }
+</center>
+
+
+**Disclaimer:**  The appearance of U.S. Department of Defense (DoD) visual information does not imply or constitute DoD endorsement.  The views expressed in this presentation are those only of the author and do not represent the official position of the U.S. Army, DoD, or the federal government.
+
+## Topics & Class Structure
+
+1. Overview of modeling
+2. Tidymodels (R)  
+3. scikit-learn (Python)
+4. Pros / Cons
+
+## Software Prerequisites
+
+1. R 3.6.x or newer
+2. RStudio 1.2.x or newer
+3. Python (version x)
+
+## Human Prerequisites
+
+We assume you have:
+
+1. Working knowledge of R and RStudio and/or Python;
+2. Some experience with contemporary tidy coding concepts;
+3. An understanding of modeling principals. 
+
+Do your best to follow along.  We are happy to answer questions.  This presentation is available at [this link](www.google.com)
+
+## Distance Learning Challenges
+
+1. Don't be afraid to ask questions - both verbally and in chat.
+2. If you miss something we said, it's likely others have too - you'll be helping them by speaking up.
+3. Its difficult the know the speed of the class, so please communicate!
+
+## Endstate
+
+1. You generally understand the modeling process in R and Python;
+2. You have access to resources to learn more.
+
+## Instructors Introduction
+
+### MAJ Dusty Turner
+
+Army 
+
+- Combat Engineer
+- Platoon Leader / XO / Company Commander
+- Geospatial / Sapper / Route Clearance
+- Hawaii / White Sands Missile Range / Iraq / Afghanistan
+
+Education
+
+- West Point '07
+  - Operations Research, BS
+- Missouri University of Science and Technology '12
+  - Engineering Management, MS
+- THE Ohio State '16
+  - Integrated Systems Engineering, MS
+  - Applied Statistics, Graduate Minor
+
+Data Science
+
+- R User Since '14
+- Catch me on Twitter [`@dtdusty`](http://www.twitter.com/dtdusty)
+- <http://dustysturner.com/>
+
+### Robert Ward
+
+Education
+
+- University of Chicago, '13
+  - Political Science & English, BA
+- Columbia University School of International and Public Affairs, '18
+  - Master of International Affairs, Specialization in Advanced Policy and Economic Analysis
+  
+Data Science
+
+- R user since 2011; also know some python and forgot some Stata
+- Worked for Government Accountability Office Applied Research & Methods
+- Operations Research Systems Analyst at CAA and Army Leader Dashboard/Vantage PM team
+
+
+## Lets Get Started...
+
+### Prerequisite Packages
+
+```{r eval=FALSE, include=TRUE}
+install.packages(c("tidyverse", "tidymodels"), dependencies = TRUE)
+```
+
+```{python eval = FALSE, include = TRUE}
+pip install something 
+```
+

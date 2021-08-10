@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 Modeling in R With Tidymodels | Git and Differential Equations in R</title>
+  <meta name="description" content="2 Modeling in R With Tidymodels | Git and Differential Equations in R" />
+  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 Modeling in R With Tidymodels | Git and Differential Equations in R" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 Modeling in R With Tidymodels | Git and Differential Equations in R" />
+  
+  
+  
+
+<meta name="author" content="MAJ Dusty Turner and Robert Ward" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="index.html"/>
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+
+
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href = "https://cprobe.army.mil/shinyapps/CAA/MORS_ETF_2020/">Tutorial Home</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> output:</a></li>
+<li class="chapter" data-level="2" data-path="2-modeling-in-r-with-tidymodels.html"><a href="2-modeling-in-r-with-tidymodels.html"><i class="fa fa-check"></i><b>2</b> Modeling in R With Tidymodels</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Git and Differential Equations in R</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="modeling-in-r-with-tidymodels" class="section level1">
+<h1><span class="header-section-number">2</span> Modeling in R With Tidymodels</h1>
+<p>“The tidymodels framework is a collection of packages for modeling and machine learning using tidyverse principles.”</p>
+<p><a href="https://www.tidymodels.org/">https://www.tidymodels.org/</a></p>
+<p>Many modeling techniques in R require different syntax and different data structures. Tidymodels provides modeling workflow that standardizes syntax and data structures regardless of the model type.</p>
+<div id="tidymodels-packages" class="section level2">
+<h2><span class="header-section-number">2.1</span> Tidymodels Packages</h2>
+<p>Like the tidyverse, tidymodels is a ‘meta package’ consisting of the following packages:</p>
+<ul>
+<li>{<a href="https://rsample.tidymodels.org/">rsample</a>}: Creates different types of resamples and corresponding classes for analysis</li>
+<li>{<a href="https://recipes.tidymodels.org/">recipes</a>}: Uses dplyr-like pipeable sequences of feature engineering steps to get data ready for modeling</li>
+<li>{<a href="https://workflows.tidymodels.org/index.html">workflows</a>}: Creates an object that can bundle together your pre-processing, modeling, and post-processing steps</li>
+<li>{<a href="https://parsnip.tidymodels.org/">parsnip</a>}: Provides a tidy, unified interface to models than can by used to try a range of models without getting bogged down in the syntactical ninutae of the underslying packages.</li>
+<li>{<a href="https://tune.tidymodels.org/">tune</a>}: Facilitates hyperparameter tuning for the tidymodels packages.</li>
+<li>{<a href="https://yardstick.tidymodels.org/index.html">yardstick</a>}: Estimates how well models are working using tidy data principles.</li>
+<li>{<a href="https://infer.tidymodels.org/index.html">infer</a>}: Performs statistical inference using an expressive statistical grammar that coheres with the tidyverse design framework.</li>
+</ul>
+<div id="tidymodels-road-map" class="section level3">
+<h3><span class="header-section-number">2.1.1</span> Tidymodels Road Map</h3>
+<p>What we plan to do:</p>
+<ol style="list-style-type: decimal">
+<li>Explore data</li>
+<li>Create model
+<ul>
+<li>{rsample} Split data into test/train</li>
+<li>{recipies} Preprocess data</li>
+<li>{parsnip} Specify model</li>
+<li>{workflows} Create workflow</li>
+<li>{tune} / {dials} Train and tune parameters</li>
+<li>{parsnip} Finalize model</li>
+<li>{yardstick} Validate model</li>
+</ul></li>
+<li>Predict on new data</li>
+</ol>
+</div>
+<div id="modeling-goal" class="section level3">
+<h3><span class="header-section-number">2.1.2</span> Modeling Goal</h3>
+<p>We desire to create a model using the <code>historical</code> data and use that model to predict who may make the Hall-of-Fame in the <code>eligible</code> data.</p>
+</div>
+</div>
+<div id="explore-data" class="section level2">
+<h2><span class="header-section-number">2.2</span> Explore Data</h2>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(tidyverse)</a></code></pre></div>
+<pre><code>## Warning: package &#39;tidyverse&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## -- Attaching packages --------------------------------------- tidyverse 1.3.1 --</code></pre>
+<pre><code>## v ggplot2 3.3.3     v purrr   0.3.4
+## v tibble  3.1.0     v dplyr   1.0.6
+## v tidyr   1.1.3     v stringr 1.4.0
+## v readr   1.4.0     v forcats 0.5.1</code></pre>
+<pre><code>## Warning: package &#39;ggplot2&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## Warning: package &#39;tibble&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## Warning: package &#39;tidyr&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## Warning: package &#39;readr&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## Warning: package &#39;purrr&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## Warning: package &#39;dplyr&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## Warning: package &#39;forcats&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## -- Conflicts ------------------------------------------ tidyverse_conflicts() --
+## x dplyr::filter() masks stats::filter()
+## x dplyr::lag()    masks stats::lag()</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1">historical &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;01_data/historical_baseball.csv&quot;</span>, <span class="dt">col_types =</span> <span class="kw">cols</span>(<span class="dt">inducted =</span> <span class="kw">col_factor</span>())) </a>
+<a class="sourceLine" id="cb13-2" title="2">eligible &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;01_data/eligible_baseball.csv&quot;</span>) </a></code></pre></div>
+<pre><code>## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   player_id = col_character(),
+##   g = col_double(),
+##   ab = col_double(),
+##   r = col_double(),
+##   h = col_double(),
+##   x2b = col_double(),
+##   x3b = col_double(),
+##   hr = col_double(),
+##   rbi = col_double(),
+##   sb = col_double(),
+##   cs = col_double(),
+##   bb = col_double(),
+##   so = col_double(),
+##   last_year = col_double()
+## )</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">historical</a></code></pre></div>
+<pre><code>## # A tibble: 3,235 x 15
+##    player_id inducted     g    ab     r     h   x2b   x3b    hr   rbi    sb
+##    &lt;chr&gt;     &lt;fct&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 aaronha01 1         3298 12364  2174  3771   624    98   755  2297   240
+##  2 aaronto01 0          437   944   102   216    42     6    13    94     9
+##  3 aasedo01  0          448     5     0     0     0     0     0     0     0
+##  4 abbated01 0          855  3044   355   772    99    43    11   324   142
+##  5 abbotgl01 0          248     0     0     0     0     0     0     0     0
+##  6 abbotji01 0          263    21     0     2     0     0     0     3     0
+##  7 abernte02 0          681   181    12    25     3     0     0     9     0
+##  8 ackerji01 0          467    54     2     9     1     0     0     1     0
+##  9 adairje01 0         1165  4019   378  1022   163    19    57   366    29
+## 10 adamsba01 0          482  1019    79   216    31    15     3    75     1
+## # ... with 3,225 more rows, and 4 more variables: cs &lt;dbl&gt;, bb &lt;dbl&gt;, so &lt;dbl&gt;,
+## #   last_year &lt;dbl&gt;</code></pre>
+<p>The <code>historical</code> data contains career statistics of every baseball batter from 1880-2011 who no longer meet Hall-of-Fame eligability requirements or who have already made the hall-of-fame.</p>
+<p>Hall of Fame Qualifications<br />
+- Play at least 10 years<br />
+- Retired for at least 5 years<br />
+- Players have only 10 years of eligability</p>
+<p>The <code>eligible</code> data contains everyone who is still eligible for the Hall-of-Fame</p>
+<p>You can see from the data below, the players who make the Hall-of-Fame tend to perform better in a few standard baseball statistics.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1">historical <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb17-2" title="2"><span class="st">  </span><span class="kw">select</span>(<span class="op">-</span>last_year) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb17-3" title="3"><span class="st">  </span><span class="kw">group_by</span>(inducted) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb17-4" title="4"><span class="st">  </span><span class="kw">summarise</span>(<span class="kw">across</span>(<span class="dt">.cols =</span> <span class="kw">where</span>(is.numeric), <span class="dt">.fns =</span> <span class="op">~</span><span class="kw">round</span>(<span class="kw">mean</span>(.),<span class="dv">0</span>))) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb17-5" title="5"><span class="st">  </span>gt<span class="op">::</span><span class="kw">gt</span>()</a></code></pre></div>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#leqxkmuaie .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#leqxkmuaie .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#leqxkmuaie .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#leqxkmuaie .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#leqxkmuaie .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#leqxkmuaie .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#leqxkmuaie .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#leqxkmuaie .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#leqxkmuaie .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#leqxkmuaie .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#leqxkmuaie .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#leqxkmuaie .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#leqxkmuaie .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#leqxkmuaie .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#leqxkmuaie .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#leqxkmuaie .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#leqxkmuaie .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#leqxkmuaie .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#leqxkmuaie .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#leqxkmuaie .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#leqxkmuaie .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#leqxkmuaie .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#leqxkmuaie .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#leqxkmuaie .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#leqxkmuaie .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#leqxkmuaie .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#leqxkmuaie .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#leqxkmuaie .gt_left {
+  text-align: left;
+}
+
+#leqxkmuaie .gt_center {
+  text-align: center;
+}
+
+#leqxkmuaie .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#leqxkmuaie .gt_font_normal {
+  font-weight: normal;
+}
+
+#leqxkmuaie .gt_font_bold {
+  font-weight: bold;
+}
+
+#leqxkmuaie .gt_font_italic {
+  font-style: italic;
+}
+
+#leqxkmuaie .gt_super {
+  font-size: 65%;
+}
+
+#leqxkmuaie .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="leqxkmuaie" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1">inducted</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">g</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">ab</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">r</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">h</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">x2b</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">x3b</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">hr</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">rbi</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">sb</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">cs</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">bb</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">so</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_center">1</td>
+      <td class="gt_row gt_right">1649</td>
+      <td class="gt_row gt_right">5794</td>
+      <td class="gt_row gt_right">934</td>
+      <td class="gt_row gt_right">1704</td>
+      <td class="gt_row gt_right">288</td>
+      <td class="gt_row gt_right">75</td>
+      <td class="gt_row gt_right">146</td>
+      <td class="gt_row gt_right">852</td>
+      <td class="gt_row gt_right">161</td>
+      <td class="gt_row gt_right">36</td>
+      <td class="gt_row gt_right">627</td>
+      <td class="gt_row gt_right">551</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_center">0</td>
+      <td class="gt_row gt_right">792</td>
+      <td class="gt_row gt_right">2330</td>
+      <td class="gt_row gt_right">305</td>
+      <td class="gt_row gt_right">612</td>
+      <td class="gt_row gt_right">99</td>
+      <td class="gt_row gt_right">23</td>
+      <td class="gt_row gt_right">40</td>
+      <td class="gt_row gt_right">273</td>
+      <td class="gt_row gt_right">48</td>
+      <td class="gt_row gt_right">16</td>
+      <td class="gt_row gt_right">215</td>
+      <td class="gt_row gt_right">269</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+<p>The plot of the data supports this as well.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1">historical <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb18-2" title="2"><span class="st">  </span><span class="kw">pivot_longer</span>(g<span class="op">:</span>so) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb18-3" title="3"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> inducted, <span class="dt">y =</span> value)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb18-4" title="4"><span class="st">  </span><span class="kw">geom_boxplot</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb18-5" title="5"><span class="st">  </span><span class="kw">facet_wrap</span>(<span class="op">~</span>name, <span class="dt">scales =</span> <span class="st">&quot;free&quot;</span>)  <span class="op">+</span></a>
+<a class="sourceLine" id="cb18-6" title="6"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">y =</span> <span class="st">&quot;&quot;</span>,<span class="dt">x =</span> <span class="st">&quot;Hall-of-Fame Indicator&quot;</span>)</a></code></pre></div>
+<p><img src="MORS-ETF-2021_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="split-data" class="section level2">
+<h2><span class="header-section-number">2.3</span> Split Data</h2>
+<p>To begin the analysis, we will load the {tidymodels} library.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1"><span class="kw">library</span>(tidymodels)</a></code></pre></div>
+<pre><code>## Warning: package &#39;tidymodels&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## Registered S3 method overwritten by &#39;tune&#39;:
+##   method                   from   
+##   required_pkgs.model_spec parsnip</code></pre>
+<pre><code>## -- Attaching packages -------------------------------------- tidymodels 0.1.2 --</code></pre>
+<pre><code>## v broom     0.7.6      v recipes   0.1.15
+## v dials     0.0.9      v rsample   0.0.9 
+## v infer     0.5.4      v tune      0.1.3 
+## v modeldata 0.1.0      v workflows 0.2.1 
+## v parsnip   0.1.7      v yardstick 0.0.8</code></pre>
+<pre><code>## Warning: package &#39;broom&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## Warning: package &#39;dials&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## Warning: package &#39;scales&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## Warning: package &#39;infer&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## Warning: package &#39;modeldata&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## Warning: package &#39;recipes&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## Warning: package &#39;rsample&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## Warning: package &#39;yardstick&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## -- Conflicts ----------------------------------------- tidymodels_conflicts() --
+## x scales::discard() masks purrr::discard()
+## x dplyr::filter()   masks stats::filter()
+## x recipes::fixed()  masks stringr::fixed()
+## x dplyr::lag()      masks stats::lag()
+## x yardstick::spec() masks readr::spec()
+## x recipes::step()   masks stats::step()</code></pre>
+<p>We will split the data into a training (2/3s of the data) and testing set (1/3) of the data.</p>
+<p>We set the seed so the analysis is reproducible.</p>
+<p>The output of this function is an rsplit object. An rsplit object that can be used with the training and testing functions to extract the data in each split.</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb33-1" title="1"><span class="kw">set.seed</span>(<span class="dv">42</span>)</a>
+<a class="sourceLine" id="cb33-2" title="2"></a>
+<a class="sourceLine" id="cb33-3" title="3">data_split &lt;-<span class="st"> </span><span class="kw">initial_split</span>(historical, <span class="dt">prop =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">3</span>, <span class="dt">strata =</span> inducted)</a>
+<a class="sourceLine" id="cb33-4" title="4"></a>
+<a class="sourceLine" id="cb33-5" title="5">data_split</a></code></pre></div>
+<pre><code>## &lt;Analysis/Assess/Total&gt;
+## &lt;2157/1078/3235&gt;</code></pre>
+<p>We can extract the data from the rsplit object.</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb35-1" title="1">train_data &lt;-<span class="st"> </span><span class="kw">training</span>(data_split)</a>
+<a class="sourceLine" id="cb35-2" title="2">test_data  &lt;-<span class="st"> </span><span class="kw">testing</span>(data_split)</a>
+<a class="sourceLine" id="cb35-3" title="3"></a>
+<a class="sourceLine" id="cb35-4" title="4">train_data</a></code></pre></div>
+<pre><code>## # A tibble: 2,157 x 15
+##    player_id inducted     g    ab     r     h   x2b   x3b    hr   rbi    sb
+##    &lt;chr&gt;     &lt;fct&gt;    &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 aaronha01 1         3298 12364  2174  3771   624    98   755  2297   240
+##  2 abbotgl01 0          248     0     0     0     0     0     0     0     0
+##  3 abbotji01 0          263    21     0     2     0     0     0     3     0
+##  4 abernte02 0          681   181    12    25     3     0     0     9     0
+##  5 adairje01 0         1165  4019   378  1022   163    19    57   366    29
+##  6 adamsbe01 0          267   678    37   137    17     4     2    45     9
+##  7 ageeto01  0         1129  3912   558   999   170    27   130   433   167
+##  8 aguilri01 0          737   139    12    28     3     0     3    11     0
+##  9 ainsmed01 0         1078  3048   299   707   108    54    22   317    86
+## 10 aldremi01 0          930  2147   277   565   104     9    41   271    19
+## # ... with 2,147 more rows, and 4 more variables: cs &lt;dbl&gt;, bb &lt;dbl&gt;, so &lt;dbl&gt;,
+## #   last_year &lt;dbl&gt;</code></pre>
+<p>From the training data, we further split the data into a training (2/3 of the training data) and a validation set (1/3 of the training data) for parameter tuning and model assessment.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb37-1" title="1"><span class="kw">set.seed</span>(<span class="dv">42</span>)</a>
+<a class="sourceLine" id="cb37-2" title="2"></a>
+<a class="sourceLine" id="cb37-3" title="3">validation_set &lt;-<span class="st"> </span><span class="kw">validation_split</span>(<span class="dt">data =</span> train_data, <span class="dt">prop =</span> <span class="dv">2</span><span class="op">/</span><span class="dv">3</span>, <span class="dt">strata =</span> inducted)</a>
+<a class="sourceLine" id="cb37-4" title="4">validation_set</a></code></pre></div>
+<pre><code>## # Validation Set Split (0.67/0.33)  using stratification 
+## # A tibble: 1 x 2
+##   splits             id        
+##   &lt;list&gt;             &lt;chr&gt;     
+## 1 &lt;split [1438/719]&gt; validation</code></pre>
+</div>
+<div id="prepare-data" class="section level2">
+<h2><span class="header-section-number">2.4</span> Prepare Data</h2>
+<p>What preprocessing steps do you want to do to your date every time you model?</p>
+<p>We need to specify the following things:
+- Specify the modeling formula<br />
+- Specify the ‘roles’ of each of the factors<br />
+- Do all preprocessing steps</p>
+<p>In the {tidymodels} construct, we do this by creating a recipe.</p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb39-1" title="1">baseball_recipie &lt;-</a>
+<a class="sourceLine" id="cb39-2" title="2"><span class="st">  </span><span class="kw">recipe</span>(inducted <span class="op">~</span><span class="st"> </span>., <span class="dt">data =</span> train_data) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb39-3" title="3"><span class="st">  </span><span class="kw">update_role</span>(player_id, <span class="dt">new_role =</span> <span class="st">&quot;ID&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb39-4" title="4"><span class="st">  </span><span class="kw">step_center</span>(<span class="kw">all_numeric</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb39-5" title="5"><span class="st">  </span><span class="kw">step_scale</span>(<span class="kw">all_numeric</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb39-6" title="6"><span class="st">  </span><span class="kw">step_nzv</span>(<span class="kw">all_numeric</span>()) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb39-7" title="7"><span class="st">  </span><span class="kw">step_rm</span>(<span class="st">&quot;last_year&quot;</span>)</a>
+<a class="sourceLine" id="cb39-8" title="8"></a>
+<a class="sourceLine" id="cb39-9" title="9">baseball_recipie</a></code></pre></div>
+<pre><code>## Data Recipe
+## 
+## Inputs:
+## 
+##       role #variables
+##         ID          1
+##    outcome          1
+##  predictor         13
+## 
+## Operations:
+## 
+## Centering for all_numeric()
+## Scaling for all_numeric()
+## Sparse, unbalanced variable filter on all_numeric()
+## Delete terms &quot;last_year&quot;</code></pre>
+</div>
+<div id="specify-model" class="section level2">
+<h2><span class="header-section-number">2.5</span> Specify Model</h2>
+<p>Now that we’ve prepared our data, we need to specify the model we wish to execute.</p>
+<p>Here we identify the model type, specify parameters which need tuning, and then set the ‘engine’ (package) we wish to do the work.</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb41-1" title="1">lr_mod &lt;-</a>
+<a class="sourceLine" id="cb41-2" title="2"><span class="st">  </span><span class="kw">logistic_reg</span>(<span class="dt">mode =</span> <span class="st">&quot;classification&quot;</span>, <span class="dt">penalty =</span> <span class="kw">tune</span>(), <span class="dt">mixture =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb41-3" title="3"><span class="st">  </span><span class="kw">set_engine</span>(<span class="dt">engine =</span> <span class="st">&quot;glmnet&quot;</span>)</a>
+<a class="sourceLine" id="cb41-4" title="4"></a>
+<a class="sourceLine" id="cb41-5" title="5">lr_mod</a></code></pre></div>
+<pre><code>## Logistic Regression Model Specification (classification)
+## 
+## Main Arguments:
+##   penalty = tune()
+##   mixture = 1
+## 
+## Computational engine: glmnet</code></pre>
+</div>
+<div id="create-workflow" class="section level2">
+<h2><span class="header-section-number">2.6</span> Create Workflow</h2>
+<p>Now that we’ve prepared the data and specified the model, we put it all together in a workflow.</p>
+<p>In a workflow, we add the specified model and the preprocessing recipe.</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb43-1" title="1">baseball_workflow &lt;-</a>
+<a class="sourceLine" id="cb43-2" title="2"><span class="st">  </span><span class="kw">workflow</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb43-3" title="3"><span class="st">  </span><span class="kw">add_model</span>(lr_mod) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb43-4" title="4"><span class="st">  </span><span class="kw">add_recipe</span>(baseball_recipie)</a>
+<a class="sourceLine" id="cb43-5" title="5"></a>
+<a class="sourceLine" id="cb43-6" title="6">baseball_workflow</a></code></pre></div>
+<pre><code>## == Workflow ====================================================================
+## Preprocessor: Recipe
+## Model: logistic_reg()
+## 
+## -- Preprocessor ----------------------------------------------------------------
+## 4 Recipe Steps
+## 
+## * step_center()
+## * step_scale()
+## * step_nzv()
+## * step_rm()
+## 
+## -- Model -----------------------------------------------------------------------
+## Logistic Regression Model Specification (classification)
+## 
+## Main Arguments:
+##   penalty = tune()
+##   mixture = 1
+## 
+## Computational engine: glmnet</code></pre>
+</div>
+<div id="train-model-and-tune-parameters" class="section level2">
+<h2><span class="header-section-number">2.7</span> Train Model and Tune Parameters</h2>
+<p>This step not only executes the model building proceedure, but it contains the structure to execute the model over a grid of parameters to tune the model and find the best parameter set.</p>
+<p>First we specify the parameters over which we desire to tune.</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb45-1" title="1">lr_reg_grid &lt;-<span class="st"> </span><span class="kw">tibble</span>(<span class="dt">penalty =</span> <span class="dv">10</span><span class="op">^</span><span class="kw">seq</span>(<span class="op">-</span><span class="dv">4</span>, <span class="dv">-1</span>, <span class="dt">length.out =</span> <span class="dv">30</span>))</a></code></pre></div>
+<p>Next, we use <code>tune_grid()</code> to execute the model one time for each parameter set. In this instance, this is 30 times.</p>
+<p>This function has several arguments</p>
+<p><code>grid</code>: The tibble we created that contains the parameters we have specified.
+<code>control</code>: Controls the apects of the grid search process.<br />
+<code>metrics</code>: Specifies the model quality metrics we wish to save for each model in cross validation.</p>
+<p>We also specify that we wish to save the performance metrics for each of the 30 iterations.</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb46-1" title="1"><span class="kw">set.seed</span>(<span class="dv">42</span>)</a>
+<a class="sourceLine" id="cb46-2" title="2"></a>
+<a class="sourceLine" id="cb46-3" title="3">lr_validation &lt;-</a>
+<a class="sourceLine" id="cb46-4" title="4"><span class="st">  </span>baseball_workflow <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb46-5" title="5"><span class="st">  </span><span class="kw">tune_grid</span>(validation_set,</a>
+<a class="sourceLine" id="cb46-6" title="6">            <span class="dt">grid =</span> lr_reg_grid, </a>
+<a class="sourceLine" id="cb46-7" title="7">            <span class="dt">control =</span> <span class="kw">control_grid</span>(<span class="dt">save_pred =</span> <span class="ot">TRUE</span>, </a>
+<a class="sourceLine" id="cb46-8" title="8">                                   <span class="dt">verbose =</span> <span class="ot">TRUE</span>, </a>
+<a class="sourceLine" id="cb46-9" title="9">                                   <span class="dt">allow_par =</span> <span class="ot">FALSE</span>),</a>
+<a class="sourceLine" id="cb46-10" title="10">            <span class="dt">metrics =</span> <span class="kw">metric_set</span>(roc_auc, accuracy))</a></code></pre></div>
+<pre><code>## Warning: package &#39;rlang&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## Warning: package &#39;vctrs&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## Warning: package &#39;glmnet&#39; was built under R version 3.6.3</code></pre>
+<pre><code>## i validation: preprocessor 1/1</code></pre>
+<pre><code>## v validation: preprocessor 1/1</code></pre>
+<pre><code>## i validation: preprocessor 1/1, model 1/1</code></pre>
+<pre><code>## v validation: preprocessor 1/1, model 1/1</code></pre>
+<pre><code>## i validation: preprocessor 1/1, model 1/1 (predictions)</code></pre>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb55-1" title="1">lr_validation</a></code></pre></div>
+<pre><code>## # Tuning results
+## # Validation Set Split (0.67/0.33)  using stratification 
+## # A tibble: 1 x 5
+##   splits           id         .metrics        .notes         .predictions       
+##   &lt;list&gt;           &lt;chr&gt;      &lt;list&gt;          &lt;list&gt;         &lt;list&gt;             
+## 1 &lt;split [1438/71~ validation &lt;tibble [60 x ~ &lt;tibble [0 x ~ &lt;tibble [21,570 x ~</code></pre>
+<p>Here, we extract out the best 25 models based on accuracy and plot them vs the pentalty from the tuning parameter grid.</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb57-1" title="1">lr_validation <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb57-2" title="2"><span class="st">  </span><span class="kw">show_best</span>(<span class="st">&quot;accuracy&quot;</span>, <span class="dt">n =</span> <span class="dv">25</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb57-3" title="3"><span class="st">  </span><span class="kw">arrange</span>(penalty) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.data.frame</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb57-4" title="4"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x =</span> penalty, <span class="dt">y =</span> mean)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb57-5" title="5"><span class="st">  </span><span class="kw">geom_point</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb57-6" title="6"><span class="st">  </span><span class="kw">geom_line</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb57-7" title="7"><span class="st">  </span><span class="kw">scale_x_log10</span>()</a></code></pre></div>
+<p><img src="MORS-ETF-2021_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>We desire the pentalty that gives us the simplest model, with the best accuracy. Because of that, we select the 7th smallest penalty.</p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb58-1" title="1">lr_best &lt;-</a>
+<a class="sourceLine" id="cb58-2" title="2"><span class="st">  </span>lr_validation <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb58-3" title="3"><span class="st">  </span><span class="kw">collect_metrics</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb58-4" title="4"><span class="st">  </span><span class="kw">filter</span>(.metric <span class="op">==</span><span class="st"> &quot;accuracy&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb58-5" title="5"><span class="st">  </span><span class="kw">slice</span>(<span class="dv">7</span>)</a></code></pre></div>
+<p>We show the ROC curve for the selected model.</p>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb59-1" title="1">lr_validation <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb59-2" title="2"><span class="st">  </span><span class="kw">collect_predictions</span>(<span class="dt">parameters =</span> lr_best) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb59-3" title="3"><span class="st">  </span><span class="kw">roc_curve</span>(inducted, .pred_<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb59-4" title="4"><span class="st">  </span><span class="kw">autoplot</span>()</a></code></pre></div>
+<p><img src="MORS-ETF-2021_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+</div>
+<div id="build-model-on-all-training-data-test-on-validation-set." class="section level2">
+<h2><span class="header-section-number">2.8</span> Build model on all training data, test on validation set.</h2>
+<p>Now that we’ve found the best parameter set, we need to apply this model to the entire training dataset.</p>
+<p>We made one tweek to our model specification. We specify the specific penalry from our best model from cross validation.</p>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb60-1" title="1">last_lr_mod &lt;-</a>
+<a class="sourceLine" id="cb60-2" title="2"><span class="st">  </span><span class="kw">logistic_reg</span>(<span class="dt">mode =</span> <span class="st">&quot;classification&quot;</span>, <span class="dt">penalty =</span> lr_best<span class="op">$</span>penalty, <span class="dt">mixture =</span> <span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb60-3" title="3"><span class="st">  </span><span class="kw">set_engine</span>(<span class="dt">engine =</span> <span class="st">&quot;glmnet&quot;</span>)</a>
+<a class="sourceLine" id="cb60-4" title="4"></a>
+<a class="sourceLine" id="cb60-5" title="5">last_lr_mod</a></code></pre></div>
+<pre><code>## Logistic Regression Model Specification (classification)
+## 
+## Main Arguments:
+##   penalty = lr_best$penalty
+##   mixture = 1
+## 
+## Computational engine: glmnet</code></pre>
+<p>We update our workflow to have the best parameter set with the function <code>finalize_workflow()</code>.</p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb62-1" title="1">last_lr_workflow &lt;-</a>
+<a class="sourceLine" id="cb62-2" title="2"><span class="st">  </span>baseball_workflow <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb62-3" title="3"><span class="st">  </span><span class="kw">finalize_workflow</span>(lr_best)</a>
+<a class="sourceLine" id="cb62-4" title="4"></a>
+<a class="sourceLine" id="cb62-5" title="5">last_lr_workflow</a></code></pre></div>
+<pre><code>## == Workflow ====================================================================
+## Preprocessor: Recipe
+## Model: logistic_reg()
+## 
+## -- Preprocessor ----------------------------------------------------------------
+## 4 Recipe Steps
+## 
+## * step_center()
+## * step_scale()
+## * step_nzv()
+## * step_rm()
+## 
+## -- Model -----------------------------------------------------------------------
+## Logistic Regression Model Specification (classification)
+## 
+## Main Arguments:
+##   penalty = 0.00041753189365604
+##   mixture = 1
+## 
+## Computational engine: glmnet</code></pre>
+<p>We fit the model on the entire training set.</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb64-1" title="1">last_lr_fit &lt;-</a>
+<a class="sourceLine" id="cb64-2" title="2"><span class="st">  </span>last_lr_workflow <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb64-3" title="3"><span class="st">  </span><span class="kw">last_fit</span>(data_split)</a></code></pre></div>
+<p>We can see the performance of the model below.</p>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" title="1">last_lr_fit <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb65-2" title="2"><span class="st">  </span><span class="kw">collect_metrics</span>()</a></code></pre></div>
+<pre><code>## # A tibble: 2 x 4
+##   .metric  .estimator .estimate .config             
+##   &lt;chr&gt;    &lt;chr&gt;          &lt;dbl&gt; &lt;fct&gt;               
+## 1 accuracy binary         0.943 Preprocessor1_Model1
+## 2 roc_auc  binary         0.807 Preprocessor1_Model1</code></pre>
+<p>And we can take a view look at the ROC of our final model.</p>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb67-1" title="1">last_lr_fit <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb67-2" title="2"><span class="st">  </span><span class="kw">collect_predictions</span>() <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb67-3" title="3"><span class="st">  </span><span class="kw">roc_curve</span>(inducted, .pred_<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb67-4" title="4"><span class="st">  </span><span class="kw">autoplot</span>()</a></code></pre></div>
+<p><img src="MORS-ETF-2021_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+</div>
+<div id="build-model-on-all-training-and-validation-data" class="section level2">
+<h2><span class="header-section-number">2.9</span> Build model on all training and validation data</h2>
+<p>Now, we can use the <code>fit()</code> function to build the model on the enitre <code>historical</code> data.</p>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" title="1">last_lr_workflow <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb68-2" title="2"><span class="st">  </span><span class="kw">fit</span>(<span class="dt">data =</span> historical) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb68-3" title="3"><span class="st">  </span><span class="kw">pull_workflow_fit</span>() <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">tidy</span>()</a></code></pre></div>
+<pre><code>## # A tibble: 13 x 3
+##    term        estimate  penalty
+##    &lt;chr&gt;          &lt;dbl&gt;    &lt;dbl&gt;
+##  1 (Intercept)   3.21   0.000418
+##  2 g            -1.68   0.000418
+##  3 ab            3.11   0.000418
+##  4 r            -1.43   0.000418
+##  5 h            -0.988  0.000418
+##  6 x2b           0      0.000418
+##  7 x3b          -0.118  0.000418
+##  8 hr            0      0.000418
+##  9 rbi          -0.477  0.000418
+## 10 sb            0      0.000418
+## 11 cs            0.190  0.000418
+## 12 bb            0.250  0.000418
+## 13 so            0.0290 0.000418</code></pre>
+<p>Now that we have the model, we can make predictions on the <code>eligible</code> data.</p>
+<p>How did we do?</p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" title="1">last_lr_workflow <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb70-2" title="2"><span class="st">  </span><span class="kw">fit</span>(<span class="dt">data =</span> historical) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb70-3" title="3"><span class="st">  </span><span class="kw">predict</span>(eligible, <span class="dt">type =</span> <span class="st">&quot;prob&quot;</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb70-4" title="4"><span class="st">  </span><span class="kw">bind_cols</span>(eligible) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb70-5" title="5"><span class="st">  </span><span class="kw">arrange</span>(<span class="op">-</span>.pred_<span class="dv">1</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb70-6" title="6"><span class="st">  </span><span class="kw">filter</span>(.pred_<span class="dv">1</span> <span class="op">&gt;</span>.<span class="dv">4</span>) <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb70-7" title="7"><span class="st">  </span><span class="kw">print</span>(<span class="dt">n =</span> <span class="ot">Inf</span>)</a></code></pre></div>
+<pre><code>## # A tibble: 31 x 16
+##    .pred_1 .pred_0 player_id     g    ab     r     h   x2b   x3b    hr   rbi
+##      &lt;dbl&gt;   &lt;dbl&gt; &lt;chr&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1   0.946  0.0535 bondsba01  2986  9847  2227  2935   601    77   762  1996
+##  2   0.906  0.0941 rodrial01  2784 10566  2021  3115   548    31   696  2086
+##  3   0.809  0.191  pujolal01  2426  9138  1670  2825   602    16   591  1817
+##  4   0.792  0.208  ramirma02  2302  8244  1544  2574   547    20   555  1831
+##  5   0.747  0.253  thomeji01  2543  8422  1583  2328   451    26   612  1699
+##  6   0.745  0.255  palmera01  2831 10472  1663  3020   585    38   569  1835
+##  7   0.734  0.266  jonesch06  2499  8984  1619  2726   549    38   468  1623
+##  8   0.675  0.325  jeterde01  2747 11195  1923  3465   544    66   260  1311
+##  9   0.661  0.339  sheffga01  2576  9217  1636  2689   467    27   509  1676
+## 10   0.649  0.351  ortizda01  2408  8640  1419  2472   632    19   541  1768
+## 11   0.628  0.372  heltoto01  2247  7962  1401  2519   592    37   369  1406
+## 12   0.623  0.377  walkela01  1988  6907  1355  2160   471    62   383  1311
+## 13   0.596  0.404  cabremi01  2096  7853  1321  2519   523    17   446  1553
+## 14   0.592  0.408  beltrca01  2457  9301  1522  2617   536    78   421  1536
+## 15   0.535  0.465  beltrad01  2720 10295  1428  2942   591    36   445  1571
+## 16   0.528  0.472  guerrvl01  2147  8155  1328  2590   477    46   449  1496
+## 17   0.525  0.475  giambja01  2260  7267  1227  2010   405     9   440  1441
+## 18   0.509  0.491  gonzalu01  2591  9157  1412  2591   596    68   354  1439
+## 19   0.508  0.492  kentje01   2298  8498  1320  2461   560    47   377  1518
+## 20   0.499  0.501  sosasa01   2354  8813  1475  2408   379    45   609  1667
+## 21   0.496  0.504  damonjo01  2490  9736  1668  2769   522   109   235  1139
+## 22   0.483  0.517  mcgrifr01  2460  8757  1349  2490   441    24   493  1550
+## 23   0.478  0.522  delgaca01  2035  7283  1241  2038   483    18   473  1512
+## 24   0.435  0.565  edmonji01  2011  6858  1251  1949   437    25   393  1199
+## 25   0.427  0.573  abreubo01  2425  8480  1453  2470   574    59   288  1363
+## 26   0.424  0.576  francju01  2527  8677  1285  2586   407    54   173  1194
+## 27   0.421  0.579  martied01  2055  7213  1219  2247   514    15   309  1261
+## 28   0.417  0.583  finlest01  2583  9397  1443  2548   449   124   304  1167
+## 29   0.409  0.591  galaran01  2257  8096  1195  2333   444    32   399  1425
+## 30   0.402  0.598  aloumo01   1942  7037  1109  2134   421    39   332  1287
+## 31   0.401  0.599  burksel01  2000  7232  1253  2107   402    63   352  1206
+## # ... with 5 more variables: sb &lt;dbl&gt;, cs &lt;dbl&gt;, bb &lt;dbl&gt;, so &lt;dbl&gt;,
+## #   last_year &lt;dbl&gt;</code></pre>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="index.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"toc": {
+"collapse": "none"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

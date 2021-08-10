@@ -1,15 +1,17 @@
----
-title: "Tidymodels"
-author: "Dusty and Robert"
-date: "7/21/2021"
-output: html_document
----
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
-knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file())
+<!-- --- -->
+<!-- title: "Tidymodels" -->
+<!-- author: "Dusty and Robert" -->
+<!-- date: "7/21/2021" -->
+<!-- output: html_document -->
+<!-- --- -->
 
-```
+
+<!-- ```{r setup, include=FALSE} -->
+<!-- knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE) -->
+<!-- knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file()) -->
+
+<!-- ``` -->
 
 # Modeling in R With Tidymodels
 
@@ -322,7 +324,9 @@ last_lr_workflow %>%
   predict(eligible, type = "prob") %>% 
   bind_cols(eligible) %>% 
   arrange(-.pred_1) %>% 
-  filter(.pred_1 >.4) %>% 
-  print(n = Inf)
+  filter(.pred_1 >.4) %>%
+  mutate(across(contains("pred"), ~round(.,3))) %>% 
+  # print(n = Inf) %>% 
+  DT::datatable()
 ```
 

@@ -1,0 +1,6 @@
+book_filename: "MORS ETF 2021"
+# rmd_files: ["index.Rmd"]
+rmd_files: ["index.Rmd", "1-Tidymodels.Rmd"]
+delete_merged_file: TRUE
+# output_dir: 
+clean_envir: TRUE

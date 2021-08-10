@@ -1,0 +1,12 @@
+bookdown::gitbook:
+#  split_by: 'section'
+#  split_by: 'section+number'
+#  split_by: 'none'
+  split_by: 'chapter+number'
+  config:
+    sharing: null
+    toc:
+      collapse: none
+      before: |
+        <li><a href = "https://cprobe.army.mil/shinyapps/CAA/MORS_ETF_2020/">Tutorial Home</a></li>
+  toc_depth: 1

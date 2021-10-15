@@ -39,7 +39,10 @@ We desire to create a model using the `historical` data and use that model to pr
 
 ## Explore Data
 
-
+```{r}
+library(reticulate)
+library(tidyverse)
+```
 ```{python}
 import pandas as pd
 ```
@@ -49,23 +52,7 @@ eligible = pd.read_csv('01_data/eligible_baseball.csv')
 
 historical
 ```
-```{python}
-
-```
-```{python}
-hist_means_inducted_groups = historical.drop('last_year', axis = 1) \
-  .groupby('inducted') \
-  .mean() \
-  .round()
-```
-```{r}
-# library(reticulate)
-py$hist_means_inducted_groups %>%
-  gt::gt()
-```
-
-
-The `historical` data contains career statistics of every baseball batter from 1880-2011 who no longer meet Hall-of-Fame eligability requirements or who have already made the hall-of-fame.
+The `historical` data contains career statistics of every baseball batter from 1880-2011 who no longer meet Hall-of-Fame eligibility requirements or who have already made the hall-of-fame.
 
 Hall of Fame Qualifications  
 - Play at least 10 years  
@@ -76,11 +63,15 @@ The `eligible` data contains everyone who is still eligible for the Hall-of-Fame
 
 You can see from the data below, the players who make the Hall-of-Fame tend to perform better in a few standard baseball statistics. 
 
+```{python}
+hist_means_inducted_groups = historical.drop('last_year', axis = 1) \
+  .groupby('inducted') \
+  .mean() \
+  .round()
+```
 ```{r}
-historical %>%
-  select(-last_year) %>% 
-  group_by(inducted) %>% 
-  summarise(across(.cols = where(is.numeric), .fns = ~round(mean(.),0))) %>% 
+py$hist_means_inducted_groups %>%
+  rownames_to_column(var = "inducted") %>%
   gt::gt()
 ```
 
@@ -97,12 +88,6 @@ historical %>%
 
 ## Split Data
 
-To begin the analysis, we will load the {tidymodels} library.
-
-```{r}
-library(tidymodels)
-```
-
 We will split the data into a training (2/3s of the data) and testing set (1/3) of the data.
 
 We set the seed so the analysis is reproducible.  
@@ -116,24 +101,42 @@ data_split <- initial_split(historical, prop = 2/3, strata = inducted)
 
 data_split
 ```
+```{python}
+from sklearn.model_selection import train_test_split
 
+historical_pidindex = historical.set_index('player_id')
+
+X = historical_pidindex.drop(('inducted', 'last_year', axis = 1))
+y = historical_pidindex.inducted
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0, test_size = 1/3)
+```
 We can extract the data from the rsplit object.
 
-```{r}
-train_data <- training(data_split)
-test_data  <- testing(data_split)
 
-train_data
+NOTE: Not sure I want to do this. Need to look into how gridsearchcv works more carefully first.
+
+```{python}
+from sklearn import preprocessing
+from sklearn.linear_model import LogisticRegression
+from sklearn.linear_model import LogisticRegressionCV
+from sklearn.model_selection import train_test_split
+from sklearn.pipeline import make_pipeline
+from sklearn.preprocessing import StandardScaler
+
+l1_ratio
+
+pipe_scale_lr_lasso = make_pipeline(StandardScaler(), LogisticRegressionCV(penalty = "elasticnet", solver = "saga", l1_ratios = [1.0], cv = 10, max_iter = 1000))
+pipe_scale_lr_lasso.fit(X_train, y_train)  # apply scaling on training data
+pipe_scale_lr_lasso.score(X_test, y_test)
+
+pipe_scale_lr = make_pipeline(StandardScaler(), LogisticRegression())
+pipe_scale_lr.fit(X_train, y_train)  # apply scaling on training data
+
+pipe_scale_lr.score(X_test, y_test)
 ```
 
-From the training data, we further split the data into a training (2/3 of the training data) and a validation set (1/3 of the training data) for parameter tuning and model assessment.
 
-```{r}
-set.seed(42)
-
-validation_set <- validation_split(data = train_data, prop = 2/3, strata = inducted)
-validation_set
-```
 
 ## Prepare Data
 
@@ -203,7 +206,7 @@ Next, we use `tune_grid()` to execute the model one time for each parameter set.
 This function has several arguments
 
 `grid`: The tibble we created that contains the parameters we have specified.
-`control`: Controls the apects of the grid search process.  
+`control`: Controls the aspects of the grid search process.  
 `metrics`: Specifies the model quality metrics we wish to save for each model in cross validation.
 
 We also specify that we wish to save the performance metrics for each of the 30 iterations.  

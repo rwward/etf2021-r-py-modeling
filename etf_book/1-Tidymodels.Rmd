@@ -305,7 +305,7 @@ last_lr_fit %>%
 
 ## Build model on all training and validation data
 
-Now, we can use the `fit()` function to build the model on the enitre `historical` data. 
+Now, we can use the `fit()` function to build the model on the entire `historical` data. 
 
 ```{r}
 last_lr_workflow %>% 

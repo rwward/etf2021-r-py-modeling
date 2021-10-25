@@ -1,51 +1,39 @@
 # Modeling in python with scikit-learn
 
-"The tidymodels framework is a collection of packages for modeling and machine learning using tidyverse principles."
+## Scikit-learn Overview
 
-[https://www.tidymodels.org/](https://www.tidymodels.org/)
+Like {tidymodels}, scikit-learn offers a suite of tools for predictive modeling and machine learning: it will help you split data, preprocess model inputs, fit models, and compare and assess them.
 
-Many modeling techniques in R require different syntax and different data structures.  Tidymodels provides modeling workflow that standardizes syntax and data structures regardless of the model type.  
-
-## Tidymodels Packages
-
-Like the tidyverse, tidymodels is a 'meta package' consisting of the following packages:
-
-- {[rsample](https://rsample.tidymodels.org/)}:  Creates different types of resamples and corresponding classes for analysis
-- {[recipes](https://recipes.tidymodels.org/)}:  Uses dplyr-like pipeable sequences of feature engineering steps to get data ready for modeling
-- {[workflows](https://workflows.tidymodels.org/index.html)}:   Creates an object that can bundle together your pre-processing, modeling, and post-processing steps
-- {[parsnip](https://parsnip.tidymodels.org/)}: Provides a tidy, unified interface to models than can by used to try a range of models without getting bogged down in the syntactical ninutae of the underslying packages.
-- {[tune](https://tune.tidymodels.org/)}: Facilitates hyperparameter tuning for the tidymodels packages.
-- {[yardstick](https://yardstick.tidymodels.org/index.html)}: Estimates how well models are working using tidy data principles.
-- {[infer](https://infer.tidymodels.org/index.html)}: Performs statistical inference using an expressive statistical grammar that coheres with the tidyverse design framework.
+Unlike {tidymodels}, scikit-learn is a single monolithic package with functions for the entire modeling pipeline. Users will likely still want to use pandas to ingest and prepare data, and may want to use other libraries to supplement scikit-learn's data visualiation capabilities, but scikit-learn will do most of the work by itself - and often with less and simpler code than tidymodels, at least for standard machine learning workflows.
 
 ### Tidymodels Road Map
 
 What we plan to do:
 
-1. Explore data
-2. Create model
-   - {rsample} Split data into test/train
-   - {recipies} Preprocess data
-   - {parsnip} Specify model
-   - {workflows} Create workflow
-   - {tune} / {dials} Train and tune parameters
-   - {parsnip} Finalize model
-   - {yardstick} Validate model
-3. Predict on new data
+1. Read in and explore data (pandas and R)
+2. Create model (scikit-learn)
+   - split data
+   - define pipeline with preprocessors and model with cross-validation for parameter tuning
+   - fit model
+3. Predict on new data and assess model (scikit-learn)
 
 ### Modeling Goal
 
-We desire to create a model using the `historical` data and use that model to predict who may make the Hall-of-Fame in the `eligible` data.
+We plan to create a model using the `historical` data and use that model to predict who is most likely to make it into the Hall of Fame in the `eligible` data.
 
 ## Explore Data
 
-```{r}
+```{r include=FALSE}
 library(reticulate)
 library(tidyverse)
 ```
+We'll load the pandas library to import and set up the data.
+
 ```{python}
 import pandas as pd
 ```
+Here, we use panda's `read_csv()` to import the data, and then we print the first few rows of the historical dataframe to the console.
+
 ```{python}
 historical = pd.read_csv('01_data/historical_baseball.csv')
 eligible = pd.read_csv('01_data/eligible_baseball.csv')
@@ -61,7 +49,7 @@ Hall of Fame Qualifications
 
 The `eligible` data contains everyone who is still eligible for the Hall-of-Fame
 
-You can see from the data below, the players who make the Hall-of-Fame tend to perform better in a few standard baseball statistics. 
+You can see from the data below, the players who make the Hall-of-Fame tend to perform better in a few standard baseball statistics. This pandas code does the same thing as the R code in the previous chapter - it groups the historical data by whether or not the player was inducted into the Hall of Fame, and then takes the mean of each column in each group.
 
 ```{python}
 hist_means_inducted_groups = historical.drop('last_year', axis = 1) \
@@ -69,13 +57,13 @@ hist_means_inducted_groups = historical.drop('last_year', axis = 1) \
   .mean() \
   .round()
 ```
+We bring the data back into R, using RStudio's very simple Python-R interface, and use the same R code as in Chapter 1 to print a table and produce boxplots of the means.
+
 ```{r}
 py$hist_means_inducted_groups %>%
   rownames_to_column(var = "inducted") %>%
   gt::gt()
 ```
-
-The plot of the data supports this as well. 
 
 ```{r}
 historical %>% 
@@ -88,31 +76,30 @@ historical %>%
 
 ## Split Data
 
-We will split the data into a training (2/3s of the data) and testing set (1/3) of the data.
+As we did in R, we will split the data into a training set (2/3s of the data) and testing set (1/3) of the data.
 
-We set the seed so the analysis is reproducible.  
+We set the seed so the analysis is reproducible - here, we do this using the `random_state` parameter in `train_test_split()`.
 
-The output of this function is an rsplit object.  An rsplit object that can be used with the training and testing functions to extract the data in each split.
+Instead of an `rsplit` object that contains resampling metadata, `train_test_split()` returns four objects: X (predictor) pandas DataFrame objects for the training and test sets, and y (target) pandas Series objects for the training and test sets.
 
-```{r}
-set.seed(42)
+Note that before splitting the data, we set the index of the dataframe to be `player_id`. This carries through to the outputs of `train_test_split()`, which all have `player_id` as a common index (and not as a predictor or target variable.) In a way, this serves a similar purpose to the `update_role(player_id, new_role = "ID")` line that we added to the recipe in R.
 
-data_split <- initial_split(historical, prop = 2/3, strata = inducted)
-
-data_split
-```
 ```{python}
 from sklearn.model_selection import train_test_split
 
 historical_pidindex = historical.set_index('player_id')
 
-X = historical_pidindex.drop(('inducted', 'last_year', axis = 1))
+X = historical_pidindex.drop(['inducted', 'last_year'], axis = 1)
 y = historical_pidindex.inducted
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0, test_size = 1/3)
 ```
-We can extract the data from the rsplit object.
 
+## Define a Pipeline
+
+Scikit-learn's "pipelines" serve the combined purpose of "workflows" and "recipes" in {tidymodels}. They allow you to define a set of preprocessing and modeling steps that you can then apply to any dataset. They are defined by the function `make_pipeline()`, with the steps, in order, as arguments.
+
+The first step in our pipeline will take care of scaling and centering our data. In the previous chapter, we  be using `StandardScaler()`,
 
 NOTE: Not sure I want to do this. Need to look into how gridsearchcv works more carefully first.
 
@@ -124,7 +111,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
 
-l1_ratio
+# l1_ratio
 
 pipe_scale_lr_lasso = make_pipeline(StandardScaler(), LogisticRegressionCV(penalty = "elasticnet", solver = "saga", l1_ratios = [1.0], cv = 10, max_iter = 1000))
 pipe_scale_lr_lasso.fit(X_train, y_train)  # apply scaling on training data

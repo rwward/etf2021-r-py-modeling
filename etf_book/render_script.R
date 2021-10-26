@@ -3,7 +3,7 @@ library(bookdown)
 
 bookdown::render_book(input = "index.Rmd", "bookdown::gitbook",output_dir = "MORS_ETF_2021")
 
-# serve_book(dir = ".", output_dir = "_book", preview = TRUE, in_session = TRUE, quiet = FALSE)
+# serve_book(dir = "index.Rmd", output_dir = "MORS_ETF_2021", preview = TRUE, in_session = TRUE, quiet = FALSE)
 # rmarkdown::render_site(encoding = 'UTF-8') #HTML and PDF
 
 

@@ -31,6 +31,7 @@ We'll load the pandas library to import and set up the data.
 
 ```{python}
 import pandas as pd
+import numpy as np
 ```
 Here, we use panda's `read_csv()` to import the data, and then we print the first few rows of the historical dataframe to the console.
 
@@ -99,9 +100,17 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0, test_s
 
 Scikit-learn's "pipelines" serve the combined purpose of "workflows" and "recipes" in {tidymodels}. They allow you to define a set of preprocessing and modeling steps that you can then apply to any dataset. They are defined by the function `make_pipeline()`, with the steps, in order, as arguments.
 
-The first step in our pipeline will take care of scaling and centering our data. In the previous chapter, we  be using `StandardScaler()`,
+The first two steps in our pipeline will take care of preprocessing. In the previous chapter, we centered and scaled our data; here, we'll use `StandardScaler()`, which accomplishes both of those steps. We'll also apply `VarianceThreshold()`; in its default form, this only removes zero-variance predictors, but the user can set a custom variance threshold. None of our predictors have low variance, so this feature selection mechanism does nothing anyway.
 
-NOTE: Not sure I want to do this. Need to look into how gridsearchcv works more carefully first.
+The third step in our pipeline is our model. Here, we've chosen `LogisticRegressionCV()`. The first three parameters should produce a model very similar to the one in the previous chapter:
+  - `penalty = "elasticnet"` lets us use a hybrid L1 and L2 penalty, or a mix between Lasso and Ridge regression, much like `engine = glmnet` in R;
+  - `solver = "saga"` chooses a solver that is compatible with our other options;
+  - `l1_ratios = [1.0]` is the equivalent of `mixture = 1` in R - it gives us a pure Lasso regression;
+  - `max_iter = 1000` allows the solver to attempt up to 1000 iterations as it searches for a solution. The default of 100 was insufficient for this data. 
+
+We also have one parameter related to the cross-validation (CV) part of the model specification: `cv = 10`. This means that the data will be split into ten folds, and the model will be fit ten times, with one fold being held out as a validation set each time. This process will allow the model to tune the size of penalty, which we have not specified explicitly.
+
+**NOTE: MAKE SURE THAT I'M CORRECTLY PORTRAYING HOW LOGISTICREGRESSIONCV USES CROSS VALIDATION**
 
 ```{python}
 from sklearn import preprocessing
@@ -110,14 +119,35 @@ from sklearn.linear_model import LogisticRegressionCV
 from sklearn.model_selection import train_test_split
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import StandardScaler
+from sklearn.feature_selection import VarianceThreshold
 
 # l1_ratio
 
-pipe_scale_lr_lasso = make_pipeline(StandardScaler(), LogisticRegressionCV(penalty = "elasticnet", solver = "saga", l1_ratios = [1.0], cv = 10, max_iter = 1000))
-pipe_scale_lr_lasso.fit(X_train, y_train)  # apply scaling on training data
-pipe_scale_lr_lasso.score(X_test, y_test)
+pipe_scale_lr_lasso = make_pipeline(StandardScaler(), VarianceThreshold(), LogisticRegressionCV(penalty = "elasticnet", solver = "saga", l1_ratios = [1.0], cv = 10, max_iter = 1000))
+```
 
-pipe_scale_lr = make_pipeline(StandardScaler(), LogisticRegression())
+It is also possible to use a parameter tuning method more like the onein the previous chapter, using `gridsearchCV` and a predefined grid of search values The scikit-learn user guide has a very detailed section on this method, available at: https://scikit-learn.org/stable/modules/grid_search.html
+
+## Fit the Model (Using the Pipeline)
+
+With our pipeline defined, fitting the model on the training data is very easy: we simply call the `fit()` method on the pipeline, with our `X_train` and `y_train` data as the inputs.
+
+```{python}
+pipe_scale_lr_lasso.fit(X_train, y_train)  # apply scaling on training data
+```
+
+
+## Score and Evaluate the Model
+
+The most basic way to assess the performance of a fitted scikit-learn model is the `score()` function, with the test set as inputs. This uses the fitted model to predict on the test set and returns the proportion of correct predictions.
+
+```{python}
+pipe_scale_lr_lasso.score(X_test, y_test)
+```
+
+```{python}
+
+pipe_scale_lr = make_pipeline(StandardScaler(), VarianceThreshold(), LogisticRegression())
 pipe_scale_lr.fit(X_train, y_train)  # apply scaling on training data
 
 pipe_scale_lr.score(X_test, y_test)

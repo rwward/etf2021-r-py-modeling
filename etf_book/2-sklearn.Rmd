@@ -123,7 +123,7 @@ from sklearn.feature_selection import VarianceThreshold
 
 # l1_ratio
 
-pipe_scale_lr_lasso = make_pipeline(StandardScaler(), VarianceThreshold(), LogisticRegressionCV(penalty = "elasticnet", solver = "saga", l1_ratios = [1.0], cv = 10, max_iter = 1000))
+pipe_scale_lr_lasso = make_pipeline(StandardScaler(), VarianceThreshold(), LogisticRegressionCV(penalty = "elasticnet", solver = "saga", l1_ratios = [0.5, 1.0], cv = 10, max_iter = 1000))
 ```
 
 It is also possible to use a parameter tuning method more like the onein the previous chapter, using `gridsearchCV` and a predefined grid of search values The scikit-learn user guide has a very detailed section on this method, available at: https://scikit-learn.org/stable/modules/grid_search.html

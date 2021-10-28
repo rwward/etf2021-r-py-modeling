@@ -103,14 +103,16 @@ Scikit-learn's "pipelines" serve the combined purpose of "workflows" and "recipe
 The first two steps in our pipeline will take care of preprocessing. In the previous chapter, we centered and scaled our data; here, we'll use `StandardScaler()`, which accomplishes both of those steps. We'll also apply `VarianceThreshold()`; in its default form, this only removes zero-variance predictors, but the user can set a custom variance threshold. None of our predictors have low variance, so this feature selection mechanism does nothing anyway.
 
 The third step in our pipeline is our model. Here, we've chosen `LogisticRegressionCV()`. The first three parameters should produce a model very similar to the one in the previous chapter:
+  - `Cs = 10`: the modeling function will automatically select a grid of 10 C values (inverse penalties) to search over. This is the default value. The user can also specify a specific list of C values to search over.
   - `penalty = "elasticnet"` lets us use a hybrid L1 and L2 penalty, or a mix between Lasso and Ridge regression, much like `engine = glmnet` in R;
   - `solver = "saga"` chooses a solver that is compatible with our other options;
   - `l1_ratios = [1.0]` is the equivalent of `mixture = 1` in R - it gives us a pure Lasso regression;
   - `max_iter = 1000` allows the solver to attempt up to 1000 iterations as it searches for a solution. The default of 100 was insufficient for this data. 
+  - `refit = True`: the function will find the best C (inverse penalty) value by averaging the cross-validation scores of each one, and then refit the model using the best C value on all of the data.
 
-We also have one parameter related to the cross-validation (CV) part of the model specification: `cv = 10`. This means that the data will be split into ten folds, and the model will be fit ten times, with one fold being held out as a validation set each time. This process will allow the model to tune the size of penalty, which we have not specified explicitly.
+We also have one parameter related to the cross-validation (CV) part of the model specification: `cv = 10`. This means that the data will be split into ten folds, and the model will be fit ten times for each set of hyperparameters in an automatically generated search grid, with one fold being held out as a validation set for computing accuracy in each run. This process will allow the model to tune the size of penalty, which we have not specified explicitly.
 
-**NOTE: MAKE SURE THAT I'M CORRECTLY PORTRAYING HOW LOGISTICREGRESSIONCV USES CROSS VALIDATION**
+Finally, we set `n_jobs = 4` to allow for multithreading. In my own highly unscientific testing, moving from 1 to 4 threads reduces model fit time from 15 seconds to 6 seconds.
 
 ```{python}
 from sklearn import preprocessing
@@ -123,7 +125,7 @@ from sklearn.feature_selection import VarianceThreshold
 
 # l1_ratio
 
-pipe_scale_lr_lasso = make_pipeline(StandardScaler(), VarianceThreshold(), LogisticRegressionCV(penalty = "elasticnet", solver = "saga", l1_ratios = [0.5, 1.0], cv = 10, max_iter = 1000))
+pipe_scale_lr_lasso = make_pipeline(StandardScaler(), VarianceThreshold(), LogisticRegressionCV(Cs = 10, penalty = "elasticnet", solver = "saga", l1_ratios = [1.0], cv = 10, max_iter = 1000, n_jobs = 4))
 ```
 
 It is also possible to use a parameter tuning method more like the onein the previous chapter, using `gridsearchCV` and a predefined grid of search values The scikit-learn user guide has a very detailed section on this method, available at: https://scikit-learn.org/stable/modules/grid_search.html
@@ -135,220 +137,182 @@ With our pipeline defined, fitting the model on the training data is very easy: 
 ```{python}
 pipe_scale_lr_lasso.fit(X_train, y_train)  # apply scaling on training data
 ```
+Because we used `LogisticRegressionCV()`, several of the steps we went through more carefully in the first chapter have been done for us: 
+  - hyperparameter tuning was done, using an automatically-generated grid of 10 penalty values;
+  - the highest-accuracy C value was selected, using the mean scores across all cross-validation runs for each value;
+  - the model was refit using all of the data and the highest C value.
 
+In some cases, it may be a better practice not to allow all of these decisions to be made automatically by an algorithm. It is, of course, possible to more precisely replicate the process shown in Chapter 1, by manually selecting a search grid for the penalty value, plotting and evaluating each penalty value, and manually refitting on the training set. For instance, (see here)[https://scikit-learn.org/stable/auto_examples/model_selection/plot_grid_search_refit_callable.html#sphx-glr-auto-examples-model-selection-plot-grid-search-refit-callable-py] for an example of how to "balance model complexity and cross-validated score," which, in this case, means finding a model with the least number of components from principal components analysis while maintaining a good-enough accuracy score.
 
 ## Score and Evaluate the Model
+
+### Accuracy and Predictions
 
 The most basic way to assess the performance of a fitted scikit-learn model is the `score()` function, with the test set as inputs. This uses the fitted model to predict on the test set and returns the proportion of correct predictions.
 
 ```{python}
 pipe_scale_lr_lasso.score(X_test, y_test)
 ```
+We can also get predictions using the `predict()` method, with our `X_test` DataFrame as the sole input. Our modeled predicted that just 
 
 ```{python}
-
-pipe_scale_lr = make_pipeline(StandardScaler(), VarianceThreshold(), LogisticRegression())
-pipe_scale_lr.fit(X_train, y_train)  # apply scaling on training data
-
-pipe_scale_lr.score(X_test, y_test)
+y_pred = pipe_scale_lr_lasso.predict(X_test)
 ```
 
+### Confusion Matrices and Unbalanced Classes
 
+It looks like our model predicted that just 23 out of 1079 players in the test set would be inducted into the hall of fame.
 
-## Prepare Data
+```{python}
+pred_series = pd.Series(y_pred)
+pred_series.value_counts()
+```
+While we already know that our model was 94% accurate in the test set, it's also important to compare the predictions versus the actual y_test values with a confusion matrix. In a classification problem with highly unbalanced classes, a prediction model can often score very well by simply predicting the more popular class (here, "not inducted into the Hall of Fame") in nearly every case.
 
-What preprocessing steps do you want to do to your date every time you model?  
+`sklearn.metrics.confusion_matrix()` will produce a confusion matrix as a numpy array; this is useful for further processing, but not especially easy to read. 
 
-We need to specify the following things:
-- Specify the modeling formula  
-- Specify the 'roles' of each of the factors  
-- Do all preprocessing steps  
+```{python}
+import sklearn.metrics 
 
-In the {tidymodels} construct, we do this by creating a recipe.
+sklearn.metrics.confusion_matrix(y_test, y_pred)
+```
+Fortunately, scikit-learn will also generate a much prettier and easier-to-understand confusion matrix, with the help of `matplotlib.pyplot`. As expected, our model seriously underpredicted Hall of Fame induction: we had just 4 false positives and 61 false negatives! With 19 true positives, this means that we correctly predicted less than 25% of the Hall of Fame inductees in the test set. 
 
-```{r}
+```{python}
+import matplotlib.pyplot as plt
 
-baseball_recipie <-
-  recipe(inducted ~ ., data = train_data) %>% 
-  update_role(player_id, new_role = "ID") %>% 
-  step_center(all_numeric()) %>% 
-  step_scale(all_numeric()) %>% 
-  step_nzv(all_numeric()) %>% 
-  step_rm("last_year")
-
-baseball_recipie
+sklearn.metrics.ConfusionMatrixDisplay.from_predictions(y_test, y_pred)
+plt.show()
 ```
 
-## Specify Model
+### The Decision Boundary, Precision-Recall Curves, and ROC Curves
 
-Now that we've prepared our data, we need to specify the model we wish to execute.
+One possible way to ameliorate this issue is to change the decision boundary. By default, our decision boundary is 0.5: we predict whichever class our model says has a higher probability. However, we might want to lower this threshold, so that we get more true positives - but this will likely come at the cost of having more false positives, as well. One way to assess this tradeoff is the precision-recall curve. Precision the proportion of our positive predictions that were correct; ours was pretty good, at 19/23, or 0.826. Recall is the proportion of positives that we predicted correctly; ours was quite poor, at 19/80, or 0.2375. The precision-recall curve plots precision versus recall at different decision boundaries. Here, we'll mark our current precision and recall, at the 0.5 decision boundary, with red lines.
 
-Here we identify the model type, specify parameters which need tuning, and then set the 'engine' (package) we wish to do the work.
+```{python}
+y_score = pipe_scale_lr_lasso.decision_function(X_test)
+sklearn.metrics.PrecisionRecallDisplay.from_predictions(y_test, y_score, name="LogisticRegressionCV")
+plt.axhline(y=19/23, color='r', linestyle='-', zorder = -10)
+recall_score = sklearn.metrics.recall_score(y_test, y_pred)
+plt.axvline(x = recall_score, color = 'r', linestyle = '-', zorder = -10)
 
-```{r}
-lr_mod <-
-  logistic_reg(mode = "classification", penalty = tune(), mixture = 1) %>% 
-  set_engine(engine = "glmnet")
 
-lr_mod
+plt.show()
 ```
 
-## Create Workflow
+This plot suggests that we have the option of shifting our decision boundary downward to trade precision for recall. Unfortunately, the tradeoff looks nearly linear - ideally, we would have found that we could gain a lot of recall while only losing a small amount of precision. 
 
-Now that we've prepared the data and specified the model, we put it all together in a workflow.
+### ROC Curve
 
-In a workflow, we add the specified model and the preprocessing recipe.
+Another way to assess our choice of decision boundary, and the model's performance at different boundaries, is the ROC curve, which plots the true positive rate (recall) and the true negative rate (the proportion of negative predictions out of total actual negative values.) We can plot the ROC curve using `RocCurveDisplay` from scikit-learn along with scores from `decision_function()` and the test set labels. Again, we add red lines to show the current decision boundary.
 
-```{r}
-baseball_workflow <-
-  workflow() %>% 
-  add_model(lr_mod) %>% 
-  add_recipe(baseball_recipie)
+```{python}
+y_df = pipe_scale_lr_lasso.decision_function(X_test)
+# RocCurveDisplay.from_estimator(pipe_scale_lr_lasso, X_test, y_test)
+sklearn.metrics.RocCurveDisplay.from_predictions(y_test, y_df)
+plt.axhline(y = recall_score, color='r', linestyle='-', zorder = -10) # true positive rate
+# recall_score = sklearn.metrics.recall_score(y_test, y_pred)
+plt.axvline(x = 4/999, color = 'r', linestyle = '-', zorder = -20)
 
-baseball_workflow
+plt.show()
 ```
+Again, it seems that we could shift the decision boundary downward to get a higher true positive rate - and, in this case, it looks like our false positive rate would barely budge, thanks to the very large number of true negatives in the dataset that we would still be predicting correctly.
 
-## Train Model and Tune Parameters
+Let's shift the decision boundary down to 0.33 and see how it changes our results. *Caveat: tuning your decision boundary on test set predictions is generally a bad idea, because it can easily lead to overfitting to the test set. We're doing it here for simplicity, but you're better off dealing with unbalanced classes while training your model.*
 
-This step not only executes the model building proceedure, but it contains the structure to execute the model over a grid of parameters to tune the model and find the best parameter set.
+As expected, we added both true and false positives, with a much higher proportional increase in the number of false positives (+275%) than true positives (+63%). This doesn't sound great, but it might be worthwhile if we care much more about detecting actual Hall of Fame inductees than we do about making a few more wrong predictions. 
 
-First we specify the parameters over which we desire to tune.
+```{python}
+probs = pd.DataFrame(pipe_scale_lr_lasso.predict_proba(X_test), columns = ['prob_zero', 'prob_one'])
 
-```{r}
-lr_reg_grid <- tibble(penalty = 10^seq(-4, -1, length.out = 30))
+preds_onethird = (probs['prob_one'] > 0.33).astype(int)
+
+sklearn.metrics.ConfusionMatrixDisplay.from_predictions(y_test, preds_onethird)
+plt.show()
 ```
+Let's also see where this puts us on our Precision-Recall and ROC curves.
 
-Next, we use `tune_grid()` to execute the model one time for each parameter set.  In this instance, this is 30 times.
-
-This function has several arguments
-
-`grid`: The tibble we created that contains the parameters we have specified.
-`control`: Controls the aspects of the grid search process.  
-`metrics`: Specifies the model quality metrics we wish to save for each model in cross validation.
-
-We also specify that we wish to save the performance metrics for each of the 30 iterations.  
-
-```{r}
-set.seed(42)
-
-lr_validation <-
-  baseball_workflow %>% 
-  tune_grid(validation_set,
-            grid = lr_reg_grid, 
-            control = control_grid(save_pred = TRUE, 
-                                   verbose = TRUE, 
-                                   allow_par = FALSE),
-            metrics = metric_set(roc_auc, accuracy))
-
-lr_validation
+```{python}
+recall_onethird = sklearn.metrics.recall_score(y_test, preds_onethird)
+precision_onethird = 31/46
+tnr_onethird = 15/999
 ```
+As expected, we moved to the right on the precision-recall curve, trading precision for recall.
+
+```{python}
+# y_score = pipe_scale_lr_lasso.decision_function(X_test)
+sklearn.metrics.PrecisionRecallDisplay.from_predictions(y_test, y_score, name="LogisticRegressionCV")
+plt.axhline(y=19/23, color='r', linestyle='-', zorder = -10)
+plt.axhline(y=precision_onethird, color='blue', linestyle='-', zorder = -10)
+recall_score = sklearn.metrics.recall_score(y_test, y_pred)
+plt.axvline(x = recall_score, color = 'r', linestyle = '-', zorder = -10)
+plt.axvline(x = recall_onethird, color = 'blue', linestyle = '-', zorder = -10)
+plt.show()
 
 
-Here, we extract out the best 25 models based on accuracy and plot them vs the pentalty from the tuning parameter grid.
-
-```{r}
-lr_validation %>% 
-  show_best("accuracy", n = 25) %>% 
-  arrange(penalty) %>% as.data.frame() %>% 
-  ggplot(aes(x = penalty, y = mean)) +
-  geom_point() +
-  geom_line() +
-  scale_x_log10()
 ```
+We also moved to the right on the ROC curve, but just barely! Our true positive rate increased quite a bit more than our false positive rate. Which of these plots and scores we care most about depends on the problem we're trying to solve and our sensitivity to false positives and negatives.
 
-We desire the pentalty that gives us the simplest model, with the best accuracy.  Because of that, we select the 7th smallest penalty.
+```{python}
+# y_df = pipe_scale_lr_lasso.decision_function(X_test)
+# RocCurveDisplay.from_estimator(pipe_scale_lr_lasso, X_test, y_test)
+sklearn.metrics.RocCurveDisplay.from_predictions(y_test, y_df)
+plt.axhline(y = recall_score, color='r', linestyle='-', zorder = -10) # true positive rate
+plt.axhline(y = recall_onethird, color='blue', linestyle='-', zorder = -10) # true positive rate
+# recall_score = sklearn.metrics.recall_score(y_test, y_pred)
+plt.axvline(x = 4/999, color = 'r', linestyle = '-', zorder = -20)
+plt.axvline(x = tnr_onethird, color = 'blue', linestyle = '-', zorder = -20)
 
-```{r}
-lr_best <-
-  lr_validation %>% 
-  collect_metrics() %>% 
-  filter(.metric == "accuracy") %>% 
-  slice(7)
-```
 
-We show the ROC curve for the selected model.
-
-```{r}
-lr_validation %>% 
-  collect_predictions(parameters = lr_best) %>% 
-  roc_curve(inducted, .pred_1) %>% 
-  autoplot()
+plt.show()
 
 ```
 
+<!-- ### Exploring CV Results -->
 
-## Build model on all training data, test on validation set.
+<!-- ```{python} -->
+<!-- pipe_scale_lr_lasso._final_estimator.scores_ -->
+<!-- pipe_scale_lr_lasso._final_estimator.Cs_ -->
+<!-- pipe_scale_lr_lasso._final_estimator.l1_ratios_ -->
+<!-- pipe_scale_lr_lasso._final_estimator.C_ -->
 
-Now that we've found the best parameter set, we need to apply this model to the entire training dataset.
+<!-- ``` -->
 
-We made one tweek to our model specification.  We specify the specific penalry from our best model from cross validation. 
+### Class Weights
 
-```{r}
-last_lr_mod <-
-  logistic_reg(mode = "classification", penalty = lr_best$penalty, mixture = 1) %>% 
-  set_engine(engine = "glmnet")
+If we want to avoid tuning the decision boundary directly, another option is to use the `class_weights` parameter found in many classifiers in scikit-learn. This allows us to increase the penalty for misclassifying the higher-weighted class (here, the less-frequent "inducted into Hall of Fame" class) while fitting the model. There is a "balanced" option for class weights that attempts to fully balance classes by setting class weights inversely proportional to class proportions; unfortunately, our classes are so unbalanced that this method doesn't work on this dataset. Instead, we weight the "positive" class at four times the weight of the "negative" class.
 
-last_lr_mod
+```{python}
+pipe_scale_lr_lasso_weighted = make_pipeline(StandardScaler(), VarianceThreshold(), LogisticRegressionCV(Cs = 10, penalty = "elasticnet", solver = "saga", l1_ratios = [1.0], cv = 10, max_iter = 3000, n_jobs = 4, class_weight = {0: 0.2, 1: 0.8}))
+pipe_scale_lr_lasso_weighted.fit(X_train, y_train)
 ```
 
-We update our workflow to have the best parameter set with the function `finalize_workflow()`.
+This produces a very small improvement in accuracy.
 
-```{r}
-last_lr_workflow <-
-  baseball_workflow %>%
-  finalize_workflow(lr_best)
+```{python}
+weighted_accuracy = pipe_scale_lr_lasso_weighted.score(X_test, y_test)
+print("Weighted accuracy: ", weighted_accuracy)
+print("Improvement: ", weighted_accuracy - pipe_scale_lr_lasso.score(X_test, y_test))
+```
+The difference in the confusion matrix, however, is much more noticeable: our recall is up to nearly 50%, although our precision has decreased as the number of false positives grows.
 
-last_lr_workflow
+```{python}
+y_pred_weighted = pipe_scale_lr_lasso_weighted.predict(X_test)
+
+sklearn.metrics.ConfusionMatrixDisplay.from_predictions(y_test, y_pred_weighted)
+plt.show()
+```
+Our ROC curve looks fairly similar, but the AUC has increased from 0.82 to 0.83, suggesting that this model may be slightly better.
+
+```{python}
+y_df_weighted = pipe_scale_lr_lasso_weighted.decision_function(X_test)
+# RocCurveDisplay.from_estimator(pipe_scale_lr_lasso, X_test, y_test)
+sklearn.metrics.RocCurveDisplay.from_predictions(y_test, y_df_weighted)
+plt.show()
 ```
 
-We fit the model on the entire training set.
-
-```{r}
-last_lr_fit <-
-  last_lr_workflow %>% 
-  last_fit(data_split)
-```
-
-We can see the performance of the model below.
-
-```{r}
-last_lr_fit %>% 
-  collect_metrics()
-```
-
-And we can take a view look at the ROC of our final model.
-
-```{r}
-last_lr_fit %>% 
-  collect_predictions() %>% 
-  roc_curve(inducted, .pred_1) %>% 
-  autoplot()
-```
-
-## Build model on all training and validation data
-
-Now, we can use the `fit()` function to build the model on the enitre `historical` data. 
-
-```{r}
-last_lr_workflow %>% 
-  fit(data = historical) %>%
-  pull_workflow_fit() %>% tidy()
-```
-
-Now that we have the model, we can make predictions on the `eligible` data.
-
-How did we do?
-
-
-```{r}
-last_lr_workflow %>% 
-  fit(data = historical) %>%
-  predict(eligible, type = "prob") %>% 
-  bind_cols(eligible) %>% 
-  arrange(-.pred_1) %>% 
-  filter(.pred_1 >.4) %>%
-  mutate(across(contains("pred"), ~round(.,3))) %>% 
-  # print(n = Inf) %>% 
-  DT::datatable()
+```{python}
+sklearn.metrics.PrecisionRecallDisplay.from_predictions(y_test, weighted_accuracy, name="LogisticRegressionCV Weighted")
+plt.show()
 ```
 

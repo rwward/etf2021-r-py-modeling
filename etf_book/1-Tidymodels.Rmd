@@ -222,7 +222,7 @@ lr_validation
 ```
 
 
-Here, we extract out the best 25 models based on accuracy and plot them vs the pentalty from the tuning parameter grid.
+Here, we extract out the best 25 models based on accuracy and plot them vs the penalty from the tuning parameter grid.
 
 ```{r}
 lr_validation %>% 
@@ -234,7 +234,7 @@ lr_validation %>%
   scale_x_log10()
 ```
 
-We desire the pentalty that gives us the simplest model, with the best accuracy.  Because of that, we select the 7th smallest penalty.
+We desire the penalty that gives us the simplest model, with the best accuracy.  Because of that, we select the 7th smallest penalty.
 
 ```{r}
 lr_best <-
@@ -259,7 +259,7 @@ lr_validation %>%
 
 Now that we've found the best parameter set, we need to apply this model to the entire training dataset.
 
-We made one tweek to our model specification.  We specify the specific penalry from our best model from cross validation. 
+We made one tweak to our model specification.  We specify the specific penalty from our best model from cross validation. 
 
 ```{r}
 last_lr_mod <-

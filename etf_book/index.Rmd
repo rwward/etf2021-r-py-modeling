@@ -26,12 +26,15 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FAL
 
 **Disclaimer:**  The appearance of U.S. Department of Defense (DoD) visual information does not imply or constitute DoD endorsement.  The views expressed in this presentation are those only of the author and do not represent the official position of the U.S. Army, DoD, or the federal government.
 
+#### need to add the following things
+1. link for this book
+2. do we need to have students pip install anything
+
 ## Topics & Class Structure
 
 1. Overview of modeling
 2. Tidymodels (R)  
 3. scikit-learn (Python)
-4. Pros / Cons
 
 ## Software Prerequisites
 
@@ -43,7 +46,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FAL
 
 We assume you have:
 
-1. Working knowledge of R and RStudio and/or Python;
+1. A working knowledge of R and RStudio and/or Python;
 2. Some experience with contemporary tidy coding concepts;
 3. An understanding of modeling principals. 
 
@@ -53,12 +56,12 @@ Do your best to follow along.  We are happy to answer questions.  This presentat
 
 1. Don't be afraid to ask questions - both verbally and in chat.
 2. If you miss something we said, it's likely others have too - you'll be helping them by speaking up.
-3. Its difficult the know the speed of the class, so please communicate!
+3. Its difficult to know how we should pace the class, so please communicate!
 
 ## Endstate
 
-1. You generally understand the modeling process in R and Python;
-2. You have access to resources to learn more.
+1. Students generally understand the modeling process in R and Python;
+2. Students have access to resources to learn more.
 
 ## Instructors Introduction
 

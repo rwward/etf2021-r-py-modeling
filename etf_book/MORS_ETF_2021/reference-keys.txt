@@ -21,3 +21,12 @@ create-workflow
 train-model-and-tune-parameters
 build-model-on-all-training-data-test-on-validation-set.
 build-model-on-all-training-and-validation-data
+modeling-in-python-with-scikit-learn
+scikit-learn-overview
+tidymodels-road-map-1
+modeling-goal-1
+explore-data-1
+split-data-1
+define-a-pipeline
+fit-the-model-using-the-pipeline
+score-and-evaluate-the-model

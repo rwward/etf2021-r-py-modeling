@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Git and Differential Equations in R</title>
-  <meta name="description" content="Git and Differential Equations in R" />
-  <meta name="generator" content="bookdown 0.22 and GitBook 2.6.7" />
+  <title>Modeling in R and Python</title>
+  <meta name="description" content="Modeling in R and Python" />
+  <meta name="generator" content="bookdown 0.23 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Git and Differential Equations in R" />
+  <meta property="og:title" content="Modeling in R and Python" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Git and Differential Equations in R" />
+  <meta name="twitter:title" content="Modeling in R and Python" />
   
   
   
@@ -32,7 +32,8 @@
   
 
 <link rel="next" href="2-modeling-in-r-with-tidymodels.html"/>
-<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -51,28 +52,38 @@
 
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.17/datatables.js"></script>
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.1.1/js/crosstalk.min.js"></script>
 
 
 <style type="text/css">
-a.sourceLine { display: inline-block; line-height: 1.25; }
-a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
-a.sourceLine:empty { height: 1.2em; }
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
 .sourceCode { overflow: visible; }
-code.sourceCode { white-space: pre; position: relative; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
 pre.sourceCode { margin: 0; }
 @media screen {
 div.sourceCode { overflow: auto; }
 }
 @media print {
-code.sourceCode { white-space: pre-wrap; }
-a.sourceLine { text-indent: -1em; padding-left: 1em; }
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
-pre.numberSource a.sourceLine
-  { position: relative; left: -4em; }
-pre.numberSource a.sourceLine::before
-  { content: attr(title);
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
-    border: none; pointer-events: all; display: inline-block;
+    border: none; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
     -khtml-user-select: none; -moz-user-select: none;
     -ms-user-select: none; user-select: none;
@@ -81,9 +92,9 @@ pre.numberSource a.sourceLine::before
   }
 pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
 div.sourceCode
-  {  }
+  {   }
 @media screen {
-a.sourceLine::before { text-decoration: underline; }
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
 code span.al { color: #ff0000; font-weight: bold; } /* Alert */
 code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
@@ -134,6 +145,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li class="divider"></li>
 <li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Class Introduction</a></li>
 <li class="chapter" data-level="2" data-path="2-modeling-in-r-with-tidymodels.html"><a href="2-modeling-in-r-with-tidymodels.html"><i class="fa fa-check"></i><b>2</b> Modeling in R With Tidymodels</a></li>
+<li class="chapter" data-level="3" data-path="3-modeling-in-python-with-scikit-learn.html"><a href="3-modeling-in-python-with-scikit-learn.html"><i class="fa fa-check"></i><b>3</b> Modeling in python with scikit-learn</a></li>
 </ul>
 
       </nav>
@@ -143,7 +155,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Git and Differential Equations in R</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Modeling in R and Python</a>
           </h1>
         </div>
 
@@ -152,47 +164,45 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 
             <section class="normal" id="section-">
 <div id="header">
-<h1 class="title">Git and Differential Equations in R</h1>
+<h1 class="title">Modeling in R and Python</h1>
 <p class="author"><em>MAJ Dusty Turner and Robert Ward</em></p>
-<p class="date" style="margin-top: 1.5em;"><em>7 DEC 2020</em></p>
+<p class="date"><em>7 DEC 2021</em></p>
 </div>
-<div id="class-introduction" class="section level1">
+<div id="class-introduction" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Class Introduction</h1>
 <center>
 <img src="img/caa_seal.png" style="width:25.0%" />
 </center>
 <p><strong>Disclaimer:</strong> The appearance of U.S. Department of Defense (DoD) visual information does not imply or constitute DoD endorsement. The views expressed in this presentation are those only of the author and do not represent the official position of the U.S. Army, DoD, or the federal government.</p>
-<div id="topics-class-structure" class="section level2">
+<div id="topics-class-structure" class="section level2" number="1.1">
 <h2><span class="header-section-number">1.1</span> Topics &amp; Class Structure</h2>
 <ol style="list-style-type: decimal">
-<li>Git/GitHub setup and repository download (~45 minutes; interactive)</li>
-<li>Ten-minute break</li>
-<li>Using R for modeling with differential equations (~30 minutes; interactive)</li>
-<li>Collaboration using Git (as time allows; instructor demonstration)</li>
+<li>Overview of modeling</li>
+<li>Tidymodels (R)<br />
+</li>
+<li>scikit-learn (Python)</li>
+<li>Pros / Cons</li>
 </ol>
 </div>
-<div id="software-prerequisites" class="section level2">
+<div id="software-prerequisites" class="section level2" number="1.2">
 <h2><span class="header-section-number">1.2</span> Software Prerequisites</h2>
 <ol style="list-style-type: decimal">
 <li>R 3.6.x or newer</li>
 <li>RStudio 1.2.x or newer</li>
-<li>Git</li>
-<li>Git Bash (included with Git for Windows) or another command-line application of your choice capable of using Git</li>
-<li>A github account <a href="https://github.com">github website</a></li>
+<li>Python (version x)</li>
 </ol>
 </div>
-<div id="human-prerequisites" class="section level2">
+<div id="human-prerequisites" class="section level2" number="1.3">
 <h2><span class="header-section-number">1.3</span> Human Prerequisites</h2>
 <p>We assume you have:</p>
 <ol style="list-style-type: decimal">
-<li>Working knowledge of R and RStudio;</li>
+<li>Working knowledge of R and RStudio and/or Python;</li>
 <li>Some experience with contemporary tidy coding concepts;</li>
-<li>A need to work collaboratively on projects;</li>
-<li>A healthy appreciation of dad jokes.</li>
+<li>An understanding of modeling principals.</li>
 </ol>
-<p>Try to follow along, at least through the differential equation section. It’s okay to struggle to keep up with certain parts of this - we’ll do our best to help you, but we also won’t be offended if you decide to leave.</p>
+<p>Do your best to follow along. We are happy to answer questions. This presentation is available at <a href="www.google.com">this link</a></p>
 </div>
-<div id="distance-learning-challenges" class="section level2">
+<div id="distance-learning-challenges" class="section level2" number="1.4">
 <h2><span class="header-section-number">1.4</span> Distance Learning Challenges</h2>
 <ol style="list-style-type: decimal">
 <li>Don’t be afraid to ask questions - both verbally and in chat.</li>
@@ -200,19 +210,16 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li>Its difficult the know the speed of the class, so please communicate!</li>
 </ol>
 </div>
-<div id="endstate" class="section level2">
+<div id="endstate" class="section level2" number="1.5">
 <h2><span class="header-section-number">1.5</span> Endstate</h2>
 <ol style="list-style-type: decimal">
-<li>You have git configured on your computer;</li>
-<li>You have linked git to github;</li>
-<li>You have a repo cloned to your computer;</li>
-<li>You can push, pull, and merge git conflicts in the repository;</li>
-<li>You’ve learned the basics of using differential equations in R.</li>
+<li>You generally understand the modeling process in R and Python;</li>
+<li>You have access to resources to learn more.</li>
 </ol>
 </div>
-<div id="instructors-introduction" class="section level2">
+<div id="instructors-introduction" class="section level2" number="1.6">
 <h2><span class="header-section-number">1.6</span> Instructors Introduction</h2>
-<div id="maj-dusty-turner" class="section level3">
+<div id="maj-dusty-turner" class="section level3" number="1.6.1">
 <h3><span class="header-section-number">1.6.1</span> MAJ Dusty Turner</h3>
 <p>Army</p>
 <ul>
@@ -244,7 +251,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <li><a href="http://dustysturner.com/" class="uri">http://dustysturner.com/</a></li>
 </ul>
 </div>
-<div id="robert-ward" class="section level3">
+<div id="robert-ward" class="section level3" number="1.6.2">
 <h3><span class="header-section-number">1.6.2</span> Robert Ward</h3>
 <p>Education</p>
 <ul>
@@ -265,11 +272,12 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul>
 </div>
 </div>
-<div id="lets-get-started" class="section level2">
+<div id="lets-get-started" class="section level2" number="1.7">
 <h2><span class="header-section-number">1.7</span> Lets Get Started…</h2>
-<div id="prerequisite-packages" class="section level3">
+<div id="prerequisite-packages" class="section level3" number="1.7.1">
 <h3><span class="header-section-number">1.7.1</span> Prerequisite Packages</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">install.packages</span>(<span class="kw">c</span>(<span class="st">&quot;tidyverse&quot;</span>, <span class="st">&quot;deSolve&quot;</span>), <span class="dt">dependencies =</span> <span class="ot">TRUE</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">&quot;tidyverse&quot;</span>, <span class="st">&quot;tidymodels&quot;</span>), <span class="at">dependencies =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="index.html#cb2-1" aria-hidden="true" tabindex="-1"></a>pip install something </span></code></pre></div>
 
 <!-- --- -->
 <!-- title: "Tidymodels" -->
@@ -324,6 +332,10 @@ gitbook.start({
 "text": null
 },
 "download": null,
+"search": {
+"engine": "lunr",
+"options": null
+},
 "toc": {
 "collapse": "none"
 }

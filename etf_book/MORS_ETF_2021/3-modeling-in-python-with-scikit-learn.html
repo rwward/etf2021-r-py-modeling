@@ -1,0 +1,887 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>3 Modeling in python with scikit-learn | Modeling in R and Python</title>
+  <meta name="description" content="3 Modeling in python with scikit-learn | Modeling in R and Python" />
+  <meta name="generator" content="bookdown 0.23 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="3 Modeling in python with scikit-learn | Modeling in R and Python" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="3 Modeling in python with scikit-learn | Modeling in R and Python" />
+  
+  
+  
+
+<meta name="author" content="MAJ Dusty Turner and Robert Ward" />
+
+
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="2-modeling-in-r-with-tidymodels.html"/>
+
+<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.3/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.17/datatables.js"></script>
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.1.1/js/crosstalk.min.js"></script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href = "https://cprobe.army.mil/shinyapps/CAA/MORS_ETF_2020/">Tutorial Home</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Class Introduction</a></li>
+<li class="chapter" data-level="2" data-path="2-modeling-in-r-with-tidymodels.html"><a href="2-modeling-in-r-with-tidymodels.html"><i class="fa fa-check"></i><b>2</b> Modeling in R With Tidymodels</a></li>
+<li class="chapter" data-level="3" data-path="3-modeling-in-python-with-scikit-learn.html"><a href="3-modeling-in-python-with-scikit-learn.html"><i class="fa fa-check"></i><b>3</b> Modeling in python with scikit-learn</a></li>
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Modeling in R and Python</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="modeling-in-python-with-scikit-learn" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Modeling in python with scikit-learn</h1>
+<div id="scikit-learn-overview" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Scikit-learn Overview</h2>
+<p>Like {tidymodels}, scikit-learn offers a suite of tools for predictive modeling and machine learning: it will help you split data, preprocess model inputs, fit models, and compare and assess them.</p>
+<p>Unlike {tidymodels}, scikit-learn is a single monolithic package with functions for the entire modeling pipeline. Users will likely still want to use pandas to ingest and prepare data, and may want to use other libraries to supplement scikit-learn’s data visualiation capabilities, but scikit-learn will do most of the work by itself - and often with less and simpler code than tidymodels, at least for standard machine learning workflows.</p>
+<div id="tidymodels-road-map-1" class="section level3" number="3.1.1">
+<h3><span class="header-section-number">3.1.1</span> Tidymodels Road Map</h3>
+<p>What we plan to do:</p>
+<ol style="list-style-type: decimal">
+<li>Read in and explore data (pandas and R)</li>
+<li>Create model (scikit-learn)
+<ul>
+<li>split data</li>
+<li>define pipeline with preprocessors and model with cross-validation for parameter tuning</li>
+<li>fit model</li>
+</ul></li>
+<li>Predict on new data and assess model (scikit-learn)</li>
+</ol>
+</div>
+<div id="modeling-goal-1" class="section level3" number="3.1.2">
+<h3><span class="header-section-number">3.1.2</span> Modeling Goal</h3>
+<p>We plan to create a model using the <code>historical</code> data and use that model to predict who is most likely to make it into the Hall of Fame in the <code>eligible</code> data.</p>
+</div>
+</div>
+<div id="explore-data-1" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Explore Data</h2>
+<p>We’ll load the pandas library to import and set up the data.</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb37-1"><a href="3-modeling-in-python-with-scikit-learn.html#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb37-2"><a href="3-modeling-in-python-with-scikit-learn.html#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span></code></pre></div>
+<p>Here, we use panda’s <code>read_csv()</code> to import the data, and then we print the first few rows of the historical dataframe to the console.</p>
+<div class="sourceCode" id="cb38"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb38-1"><a href="3-modeling-in-python-with-scikit-learn.html#cb38-1" aria-hidden="true" tabindex="-1"></a>historical <span class="op">=</span> pd.read_csv(<span class="st">&#39;01_data/historical_baseball.csv&#39;</span>)</span>
+<span id="cb38-2"><a href="3-modeling-in-python-with-scikit-learn.html#cb38-2" aria-hidden="true" tabindex="-1"></a>eligible <span class="op">=</span> pd.read_csv(<span class="st">&#39;01_data/eligible_baseball.csv&#39;</span>)</span>
+<span id="cb38-3"><a href="3-modeling-in-python-with-scikit-learn.html#cb38-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb38-4"><a href="3-modeling-in-python-with-scikit-learn.html#cb38-4" aria-hidden="true" tabindex="-1"></a>historical</span></code></pre></div>
+<pre><code>##       player_id  inducted     g     ab     r  ...   sb  cs    bb    so  last_year
+## 0     aaronha01         1  3298  12364  2174  ...  240  73  1402  1383       1976
+## 1     aaronto01         0   437    944   102  ...    9   8    86   145       1971
+## 2      aasedo01         0   448      5     0  ...    0   0     0     3       1990
+## 3     abbated01         0   855   3044   355  ...  142   0   289    16       1910
+## 4     abbotgl01         0   248      0     0  ...    0   0     0     0       1984
+## ...         ...       ...   ...    ...   ...  ...  ...  ..   ...   ...        ...
+## 3230   ziskri01         0  1453   5144   681  ...    8  15   533   910       1983
+## 3231  zitzmbi01         0   406   1004   197  ...   42  11    83    85       1929
+## 3232  zoskyed01         0    44     50     4  ...    0   0     1    13       2000
+## 3233  zuberbi01         0   224    229    10  ...    0   0    10    66       1947
+## 3234  zuvelpa01         0   209    491    41  ...    2   0    34    50       1991
+## 
+## [3235 rows x 15 columns]</code></pre>
+<p>The <code>historical</code> data contains career statistics of every baseball batter from 1880-2011 who no longer meet Hall-of-Fame eligibility requirements or who have already made the hall-of-fame.</p>
+<p>Hall of Fame Qualifications<br />
+- Play at least 10 years<br />
+- Retired for at least 5 years<br />
+- Players have only 10 years of eligability</p>
+<p>The <code>eligible</code> data contains everyone who is still eligible for the Hall-of-Fame</p>
+<p>You can see from the data below, the players who make the Hall-of-Fame tend to perform better in a few standard baseball statistics. This pandas code does the same thing as the R code in the previous chapter - it groups the historical data by whether or not the player was inducted into the Hall of Fame, and then takes the mean of each column in each group.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb40-1"><a href="3-modeling-in-python-with-scikit-learn.html#cb40-1" aria-hidden="true" tabindex="-1"></a>hist_means_inducted_groups <span class="op">=</span> historical.drop(<span class="st">&#39;last_year&#39;</span>, axis <span class="op">=</span> <span class="dv">1</span>) <span class="op">\</span></span>
+<span id="cb40-2"><a href="3-modeling-in-python-with-scikit-learn.html#cb40-2" aria-hidden="true" tabindex="-1"></a>  .groupby(<span class="st">&#39;inducted&#39;</span>) <span class="op">\</span></span>
+<span id="cb40-3"><a href="3-modeling-in-python-with-scikit-learn.html#cb40-3" aria-hidden="true" tabindex="-1"></a>  .mean() <span class="op">\</span></span>
+<span id="cb40-4"><a href="3-modeling-in-python-with-scikit-learn.html#cb40-4" aria-hidden="true" tabindex="-1"></a>  .<span class="bu">round</span>()</span></code></pre></div>
+<p>We bring the data back into R, using RStudio’s very simple Python-R interface, and use the same R code as in Chapter 1 to print a table and produce boxplots of the means.</p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="3-modeling-in-python-with-scikit-learn.html#cb41-1" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span>hist_means_inducted_groups <span class="sc">%&gt;%</span></span>
+<span id="cb41-2"><a href="3-modeling-in-python-with-scikit-learn.html#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;inducted&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb41-3"><a href="3-modeling-in-python-with-scikit-learn.html#cb41-3" aria-hidden="true" tabindex="-1"></a>  gt<span class="sc">::</span><span class="fu">gt</span>()</span></code></pre></div>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#ujoigdioba .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#ujoigdioba .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ujoigdioba .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#ujoigdioba .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#ujoigdioba .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ujoigdioba .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#ujoigdioba .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#ujoigdioba .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#ujoigdioba .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#ujoigdioba .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#ujoigdioba .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#ujoigdioba .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ujoigdioba .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#ujoigdioba .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#ujoigdioba .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#ujoigdioba .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#ujoigdioba .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#ujoigdioba .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ujoigdioba .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#ujoigdioba .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#ujoigdioba .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#ujoigdioba .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#ujoigdioba .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#ujoigdioba .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ujoigdioba .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#ujoigdioba .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#ujoigdioba .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#ujoigdioba .gt_left {
+  text-align: left;
+}
+
+#ujoigdioba .gt_center {
+  text-align: center;
+}
+
+#ujoigdioba .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#ujoigdioba .gt_font_normal {
+  font-weight: normal;
+}
+
+#ujoigdioba .gt_font_bold {
+  font-weight: bold;
+}
+
+#ujoigdioba .gt_font_italic {
+  font-style: italic;
+}
+
+#ujoigdioba .gt_super {
+  font-size: 65%;
+}
+
+#ujoigdioba .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="ujoigdioba" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1">inducted</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">g</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">ab</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">r</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">h</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">x2b</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">x3b</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">hr</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">rbi</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">sb</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">cs</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">bb</th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_right" rowspan="1" colspan="1">so</th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">0</td>
+      <td class="gt_row gt_right">792</td>
+      <td class="gt_row gt_right">2330</td>
+      <td class="gt_row gt_right">305</td>
+      <td class="gt_row gt_right">612</td>
+      <td class="gt_row gt_right">99</td>
+      <td class="gt_row gt_right">23</td>
+      <td class="gt_row gt_right">40</td>
+      <td class="gt_row gt_right">273</td>
+      <td class="gt_row gt_right">48</td>
+      <td class="gt_row gt_right">16</td>
+      <td class="gt_row gt_right">215</td>
+      <td class="gt_row gt_right">269</td>
+    </tr>
+    <tr>
+      <td class="gt_row gt_left">1</td>
+      <td class="gt_row gt_right">1649</td>
+      <td class="gt_row gt_right">5794</td>
+      <td class="gt_row gt_right">934</td>
+      <td class="gt_row gt_right">1704</td>
+      <td class="gt_row gt_right">288</td>
+      <td class="gt_row gt_right">75</td>
+      <td class="gt_row gt_right">146</td>
+      <td class="gt_row gt_right">852</td>
+      <td class="gt_row gt_right">161</td>
+      <td class="gt_row gt_right">36</td>
+      <td class="gt_row gt_right">627</td>
+      <td class="gt_row gt_right">551</td>
+    </tr>
+  </tbody>
+  
+  
+</table></div>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="3-modeling-in-python-with-scikit-learn.html#cb42-1" aria-hidden="true" tabindex="-1"></a>py<span class="sc">$</span>historical <span class="sc">%&gt;%</span> </span>
+<span id="cb42-2"><a href="3-modeling-in-python-with-scikit-learn.html#cb42-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(inducted) <span class="sc">%&gt;%</span> </span>
+<span id="cb42-3"><a href="3-modeling-in-python-with-scikit-learn.html#cb42-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(g<span class="sc">:</span>so) <span class="sc">%&gt;%</span> </span>
+<span id="cb42-4"><a href="3-modeling-in-python-with-scikit-learn.html#cb42-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> inducted, <span class="at">y =</span> value)) <span class="sc">+</span></span>
+<span id="cb42-5"><a href="3-modeling-in-python-with-scikit-learn.html#cb42-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>() <span class="sc">+</span></span>
+<span id="cb42-6"><a href="3-modeling-in-python-with-scikit-learn.html#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>(<span class="sc">~</span>name, <span class="at">scales =</span> <span class="st">&quot;free&quot;</span>)  <span class="sc">+</span></span>
+<span id="cb42-7"><a href="3-modeling-in-python-with-scikit-learn.html#cb42-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">&quot;&quot;</span>,<span class="at">x =</span> <span class="st">&quot;Hall-of-Fame Indicator&quot;</span>)</span></code></pre></div>
+<p><img src="MORS-ETF-2021_files/figure-html/unnamed-chunk-30-1.png" width="672" /></p>
+</div>
+<div id="split-data-1" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Split Data</h2>
+<p>As we did in R, we will split the data into a training set (2/3s of the data) and testing set (1/3) of the data.</p>
+<p>We set the seed so the analysis is reproducible - here, we do this using the <code>random_state</code> parameter in <code>train_test_split()</code>.</p>
+<p>Instead of an <code>rsplit</code> object that contains resampling metadata, <code>train_test_split()</code> returns four objects: X (predictor) pandas DataFrame objects for the training and test sets, and y (target) pandas Series objects for the training and test sets.</p>
+<p>Note that before splitting the data, we set the index of the dataframe to be <code>player_id</code>. This carries through to the outputs of <code>train_test_split()</code>, which all have <code>player_id</code> as a common index (and not as a predictor or target variable.) In a way, this serves a similar purpose to the <code>update_role(player_id, new_role = "ID")</code> line that we added to the recipe in R.</p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb43-1"><a href="3-modeling-in-python-with-scikit-learn.html#cb43-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb43-2"><a href="3-modeling-in-python-with-scikit-learn.html#cb43-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-3"><a href="3-modeling-in-python-with-scikit-learn.html#cb43-3" aria-hidden="true" tabindex="-1"></a>historical_pidindex <span class="op">=</span> historical.set_index(<span class="st">&#39;player_id&#39;</span>)</span>
+<span id="cb43-4"><a href="3-modeling-in-python-with-scikit-learn.html#cb43-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-5"><a href="3-modeling-in-python-with-scikit-learn.html#cb43-5" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> historical_pidindex.drop([<span class="st">&#39;inducted&#39;</span>, <span class="st">&#39;last_year&#39;</span>], axis <span class="op">=</span> <span class="dv">1</span>)</span>
+<span id="cb43-6"><a href="3-modeling-in-python-with-scikit-learn.html#cb43-6" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> historical_pidindex.inducted</span>
+<span id="cb43-7"><a href="3-modeling-in-python-with-scikit-learn.html#cb43-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb43-8"><a href="3-modeling-in-python-with-scikit-learn.html#cb43-8" aria-hidden="true" tabindex="-1"></a>X_train, X_test, y_train, y_test <span class="op">=</span> train_test_split(X, y, random_state<span class="op">=</span><span class="dv">0</span>, test_size <span class="op">=</span> <span class="dv">1</span><span class="op">/</span><span class="dv">3</span>)</span></code></pre></div>
+</div>
+<div id="define-a-pipeline" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> Define a Pipeline</h2>
+<p>Scikit-learn’s “pipelines” serve the combined purpose of “workflows” and “recipes” in {tidymodels}. They allow you to define a set of preprocessing and modeling steps that you can then apply to any dataset. They are defined by the function <code>make_pipeline()</code>, with the steps, in order, as arguments.</p>
+<p>The first two steps in our pipeline will take care of preprocessing. In the previous chapter, we centered and scaled our data; here, we’ll use <code>StandardScaler()</code>, which accomplishes both of those steps. We’ll also apply <code>VarianceThreshold()</code>; in its default form, this only removes zero-variance predictors, but the user can set a custom variance threshold. None of our predictors have low variance, so this feature selection mechanism does nothing anyway.</p>
+<p>The third step in our pipeline is our model. Here, we’ve chosen <code>LogisticRegressionCV()</code>. The first three parameters should produce a model very similar to the one in the previous chapter:
+- <code>penalty = "elasticnet"</code> lets us use a hybrid L1 and L2 penalty, or a mix between Lasso and Ridge regression, much like <code>engine = glmnet</code> in R;
+- <code>solver = "saga"</code> chooses a solver that is compatible with our other options;
+- <code>l1_ratios = [1.0]</code> is the equivalent of <code>mixture = 1</code> in R - it gives us a pure Lasso regression;
+- <code>max_iter = 1000</code> allows the solver to attempt up to 1000 iterations as it searches for a solution. The default of 100 was insufficient for this data.</p>
+<p>We also have one parameter related to the cross-validation (CV) part of the model specification: <code>cv = 10</code>. This means that the data will be split into ten folds, and the model will be fit ten times, with one fold being held out as a validation set each time. This process will allow the model to tune the size of penalty, which we have not specified explicitly.</p>
+<p><strong>NOTE: MAKE SURE THAT I’M CORRECTLY PORTRAYING HOW LOGISTICREGRESSIONCV USES CROSS VALIDATION</strong></p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb44-1"><a href="3-modeling-in-python-with-scikit-learn.html#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn <span class="im">import</span> preprocessing</span>
+<span id="cb44-2"><a href="3-modeling-in-python-with-scikit-learn.html#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegression</span>
+<span id="cb44-3"><a href="3-modeling-in-python-with-scikit-learn.html#cb44-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LogisticRegressionCV</span>
+<span id="cb44-4"><a href="3-modeling-in-python-with-scikit-learn.html#cb44-4" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.model_selection <span class="im">import</span> train_test_split</span>
+<span id="cb44-5"><a href="3-modeling-in-python-with-scikit-learn.html#cb44-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.pipeline <span class="im">import</span> make_pipeline</span>
+<span id="cb44-6"><a href="3-modeling-in-python-with-scikit-learn.html#cb44-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.preprocessing <span class="im">import</span> StandardScaler</span>
+<span id="cb44-7"><a href="3-modeling-in-python-with-scikit-learn.html#cb44-7" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_selection <span class="im">import</span> VarianceThreshold</span>
+<span id="cb44-8"><a href="3-modeling-in-python-with-scikit-learn.html#cb44-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-9"><a href="3-modeling-in-python-with-scikit-learn.html#cb44-9" aria-hidden="true" tabindex="-1"></a><span class="co"># l1_ratio</span></span>
+<span id="cb44-10"><a href="3-modeling-in-python-with-scikit-learn.html#cb44-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb44-11"><a href="3-modeling-in-python-with-scikit-learn.html#cb44-11" aria-hidden="true" tabindex="-1"></a>pipe_scale_lr_lasso <span class="op">=</span> make_pipeline(StandardScaler(), VarianceThreshold(), LogisticRegressionCV(penalty <span class="op">=</span> <span class="st">&quot;elasticnet&quot;</span>, solver <span class="op">=</span> <span class="st">&quot;saga&quot;</span>, l1_ratios <span class="op">=</span> [<span class="fl">0.5</span>, <span class="fl">1.0</span>], cv <span class="op">=</span> <span class="dv">10</span>, max_iter <span class="op">=</span> <span class="dv">1000</span>))</span></code></pre></div>
+<p>It is also possible to use a parameter tuning method more like the onein the previous chapter, using <code>gridsearchCV</code> and a predefined grid of search values The scikit-learn user guide has a very detailed section on this method, available at: <a href="https://scikit-learn.org/stable/modules/grid_search.html" class="uri">https://scikit-learn.org/stable/modules/grid_search.html</a></p>
+</div>
+<div id="fit-the-model-using-the-pipeline" class="section level2" number="3.5">
+<h2><span class="header-section-number">3.5</span> Fit the Model (Using the Pipeline)</h2>
+<p>With our pipeline defined, fitting the model on the training data is very easy: we simply call the <code>fit()</code> method on the pipeline, with our <code>X_train</code> and <code>y_train</code> data as the inputs.</p>
+<div class="sourceCode" id="cb45"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb45-1"><a href="3-modeling-in-python-with-scikit-learn.html#cb45-1" aria-hidden="true" tabindex="-1"></a>pipe_scale_lr_lasso.fit(X_train, y_train)  <span class="co"># apply scaling on training data</span></span></code></pre></div>
+<pre><code>## Pipeline(steps=[(&#39;standardscaler&#39;, StandardScaler()),
+##                 (&#39;variancethreshold&#39;, VarianceThreshold()),
+##                 (&#39;logisticregressioncv&#39;,
+##                  LogisticRegressionCV(cv=10, l1_ratios=[0.5, 1.0],
+##                                       max_iter=1000, penalty=&#39;elasticnet&#39;,
+##                                       solver=&#39;saga&#39;))])</code></pre>
+</div>
+<div id="score-and-evaluate-the-model" class="section level2" number="3.6">
+<h2><span class="header-section-number">3.6</span> Score and Evaluate the Model</h2>
+<p>The most basic way to assess the performance of a fitted scikit-learn model is the <code>score()</code> function, with the test set as inputs. This uses the fitted model to predict on the test set and returns the proportion of correct predictions.</p>
+<div class="sourceCode" id="cb47"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb47-1"><a href="3-modeling-in-python-with-scikit-learn.html#cb47-1" aria-hidden="true" tabindex="-1"></a>pipe_scale_lr_lasso.score(X_test, y_test)</span></code></pre></div>
+<pre><code>## 0.9397590361445783</code></pre>
+<div class="sourceCode" id="cb49"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb49-1"><a href="3-modeling-in-python-with-scikit-learn.html#cb49-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb49-2"><a href="3-modeling-in-python-with-scikit-learn.html#cb49-2" aria-hidden="true" tabindex="-1"></a>pipe_scale_lr <span class="op">=</span> make_pipeline(StandardScaler(), VarianceThreshold(), LogisticRegression())</span>
+<span id="cb49-3"><a href="3-modeling-in-python-with-scikit-learn.html#cb49-3" aria-hidden="true" tabindex="-1"></a>pipe_scale_lr.fit(X_train, y_train)  <span class="co"># apply scaling on training data</span></span></code></pre></div>
+<pre><code>## Pipeline(steps=[(&#39;standardscaler&#39;, StandardScaler()),
+##                 (&#39;variancethreshold&#39;, VarianceThreshold()),
+##                 (&#39;logisticregression&#39;, LogisticRegression())])</code></pre>
+<div class="sourceCode" id="cb51"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb51-1"><a href="3-modeling-in-python-with-scikit-learn.html#cb51-1" aria-hidden="true" tabindex="-1"></a>pipe_scale_lr.score(X_test, y_test)</span></code></pre></div>
+<pre><code>## 0.9397590361445783</code></pre>
+<!-- ## Prepare Data -->
+<!-- What preprocessing steps do you want to do to your date every time you model?   -->
+<!-- We need to specify the following things: -->
+<!-- - Specify the modeling formula   -->
+<!-- - Specify the 'roles' of each of the factors   -->
+<!-- - Do all preprocessing steps   -->
+<!-- In the {tidymodels} construct, we do this by creating a recipe. -->
+<!-- ```{r} -->
+<!-- baseball_recipie <- -->
+<!--   recipe(inducted ~ ., data = train_data) %>%  -->
+<!--   update_role(player_id, new_role = "ID") %>%  -->
+<!--   step_center(all_numeric()) %>%  -->
+<!--   step_scale(all_numeric()) %>%  -->
+<!--   step_nzv(all_numeric()) %>%  -->
+<!--   step_rm("last_year") -->
+<!-- baseball_recipie -->
+<!-- ``` -->
+<!-- ## Specify Model -->
+<!-- Now that we've prepared our data, we need to specify the model we wish to execute. -->
+<!-- Here we identify the model type, specify parameters which need tuning, and then set the 'engine' (package) we wish to do the work. -->
+<!-- ```{r} -->
+<!-- lr_mod <- -->
+<!--   logistic_reg(mode = "classification", penalty = tune(), mixture = 1) %>%  -->
+<!--   set_engine(engine = "glmnet") -->
+<!-- lr_mod -->
+<!-- ``` -->
+<!-- ## Create Workflow -->
+<!-- Now that we've prepared the data and specified the model, we put it all together in a workflow. -->
+<!-- In a workflow, we add the specified model and the preprocessing recipe. -->
+<!-- ```{r} -->
+<!-- baseball_workflow <- -->
+<!--   workflow() %>%  -->
+<!--   add_model(lr_mod) %>%  -->
+<!--   add_recipe(baseball_recipie) -->
+<!-- baseball_workflow -->
+<!-- ``` -->
+<!-- ## Train Model and Tune Parameters -->
+<!-- This step not only executes the model building proceedure, but it contains the structure to execute the model over a grid of parameters to tune the model and find the best parameter set. -->
+<!-- First we specify the parameters over which we desire to tune. -->
+<!-- ```{r} -->
+<!-- lr_reg_grid <- tibble(penalty = 10^seq(-4, -1, length.out = 30)) -->
+<!-- ``` -->
+<!-- Next, we use `tune_grid()` to execute the model one time for each parameter set.  In this instance, this is 30 times. -->
+<!-- This function has several arguments -->
+<!-- `grid`: The tibble we created that contains the parameters we have specified. -->
+<!-- `control`: Controls the aspects of the grid search process.   -->
+<!-- `metrics`: Specifies the model quality metrics we wish to save for each model in cross validation. -->
+<!-- We also specify that we wish to save the performance metrics for each of the 30 iterations.   -->
+<!-- ```{r} -->
+<!-- set.seed(42) -->
+<!-- lr_validation <- -->
+<!--   baseball_workflow %>%  -->
+<!--   tune_grid(validation_set, -->
+<!--             grid = lr_reg_grid,  -->
+<!--             control = control_grid(save_pred = TRUE,  -->
+<!--                                    verbose = TRUE,  -->
+<!--                                    allow_par = FALSE), -->
+<!--             metrics = metric_set(roc_auc, accuracy)) -->
+<!-- lr_validation -->
+<!-- ``` -->
+<!-- Here, we extract out the best 25 models based on accuracy and plot them vs the pentalty from the tuning parameter grid. -->
+<!-- ```{r} -->
+<!-- lr_validation %>%  -->
+<!--   show_best("accuracy", n = 25) %>%  -->
+<!--   arrange(penalty) %>% as.data.frame() %>%  -->
+<!--   ggplot(aes(x = penalty, y = mean)) + -->
+<!--   geom_point() + -->
+<!--   geom_line() + -->
+<!--   scale_x_log10() -->
+<!-- ``` -->
+<!-- We desire the pentalty that gives us the simplest model, with the best accuracy.  Because of that, we select the 7th smallest penalty. -->
+<!-- ```{r} -->
+<!-- lr_best <- -->
+<!--   lr_validation %>%  -->
+<!--   collect_metrics() %>%  -->
+<!--   filter(.metric == "accuracy") %>%  -->
+<!--   slice(7) -->
+<!-- ``` -->
+<!-- We show the ROC curve for the selected model. -->
+<!-- ```{r} -->
+<!-- lr_validation %>%  -->
+<!--   collect_predictions(parameters = lr_best) %>%  -->
+<!--   roc_curve(inducted, .pred_1) %>%  -->
+<!--   autoplot() -->
+<!-- ``` -->
+<!-- ## Build model on all training data, test on validation set. -->
+<!-- Now that we've found the best parameter set, we need to apply this model to the entire training dataset. -->
+<!-- We made one tweek to our model specification.  We specify the specific penalry from our best model from cross validation.  -->
+<!-- ```{r} -->
+<!-- last_lr_mod <- -->
+<!--   logistic_reg(mode = "classification", penalty = lr_best$penalty, mixture = 1) %>%  -->
+<!--   set_engine(engine = "glmnet") -->
+<!-- last_lr_mod -->
+<!-- ``` -->
+<!-- We update our workflow to have the best parameter set with the function `finalize_workflow()`. -->
+<!-- ```{r} -->
+<!-- last_lr_workflow <- -->
+<!--   baseball_workflow %>% -->
+<!--   finalize_workflow(lr_best) -->
+<!-- last_lr_workflow -->
+<!-- ``` -->
+<!-- We fit the model on the entire training set. -->
+<!-- ```{r} -->
+<!-- last_lr_fit <- -->
+<!--   last_lr_workflow %>%  -->
+<!--   last_fit(data_split) -->
+<!-- ``` -->
+<!-- We can see the performance of the model below. -->
+<!-- ```{r} -->
+<!-- last_lr_fit %>%  -->
+<!--   collect_metrics() -->
+<!-- ``` -->
+<!-- And we can take a view look at the ROC of our final model. -->
+<!-- ```{r} -->
+<!-- last_lr_fit %>%  -->
+<!--   collect_predictions() %>%  -->
+<!--   roc_curve(inducted, .pred_1) %>%  -->
+<!--   autoplot() -->
+<!-- ``` -->
+<!-- ## Build model on all training and validation data -->
+<!-- Now, we can use the `fit()` function to build the model on the entire `historical` data.  -->
+<!-- ```{r} -->
+<!-- last_lr_workflow %>%  -->
+<!--   fit(data = historical) %>% -->
+<!--   pull_workflow_fit() %>% tidy() -->
+<!-- ``` -->
+<!-- Now that we have the model, we can make predictions on the `eligible` data. -->
+<!-- How did we do? -->
+<!-- ```{r} -->
+<!-- last_lr_workflow %>%  -->
+<!--   fit(data = historical) %>% -->
+<!--   predict(eligible, type = "prob") %>%  -->
+<!--   bind_cols(eligible) %>%  -->
+<!--   arrange(-.pred_1) %>%  -->
+<!--   filter(.pred_1 >.4) %>% -->
+<!--   mutate(across(contains("pred"), ~round(.,3))) %>%  -->
+<!--   # print(n = Inf) %>%  -->
+<!--   DT::datatable() -->
+<!-- ``` -->
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="2-modeling-in-r-with-tidymodels.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": null,
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "lunr",
+"options": null
+},
+"toc": {
+"collapse": "none"
+}
+});
+});
+</script>
+
+</body>
+
+</html>

@@ -46,7 +46,7 @@ The `historical` data contains career statistics of every baseball batter from 1
 Hall of Fame Qualifications  
 - Play at least 10 years  
 - Retired for at least 5 years  
-- Players have only 10 years of eligability   
+- Players have only 10 years of eligibility   
 
 The `eligible` data contains everyone who is still eligible for the Hall-of-Fame
 
@@ -67,7 +67,8 @@ py$hist_means_inducted_groups %>%
 ```
 
 ```{r}
-historical %>% 
+py$historical %>% 
+  group_by(inducted) %>% 
   pivot_longer(g:so) %>% 
   ggplot(aes(x = inducted, y = value)) +
   geom_boxplot() +
@@ -155,200 +156,200 @@ pipe_scale_lr.score(X_test, y_test)
 
 
 
-## Prepare Data
+<!-- ## Prepare Data -->
 
-What preprocessing steps do you want to do to your date every time you model?  
+<!-- What preprocessing steps do you want to do to your date every time you model?   -->
 
-We need to specify the following things:
-- Specify the modeling formula  
-- Specify the 'roles' of each of the factors  
-- Do all preprocessing steps  
+<!-- We need to specify the following things: -->
+<!-- - Specify the modeling formula   -->
+<!-- - Specify the 'roles' of each of the factors   -->
+<!-- - Do all preprocessing steps   -->
 
-In the {tidymodels} construct, we do this by creating a recipe.
+<!-- In the {tidymodels} construct, we do this by creating a recipe. -->
 
-```{r}
+<!-- ```{r} -->
 
-baseball_recipie <-
-  recipe(inducted ~ ., data = train_data) %>% 
-  update_role(player_id, new_role = "ID") %>% 
-  step_center(all_numeric()) %>% 
-  step_scale(all_numeric()) %>% 
-  step_nzv(all_numeric()) %>% 
-  step_rm("last_year")
+<!-- baseball_recipie <- -->
+<!--   recipe(inducted ~ ., data = train_data) %>%  -->
+<!--   update_role(player_id, new_role = "ID") %>%  -->
+<!--   step_center(all_numeric()) %>%  -->
+<!--   step_scale(all_numeric()) %>%  -->
+<!--   step_nzv(all_numeric()) %>%  -->
+<!--   step_rm("last_year") -->
 
-baseball_recipie
-```
+<!-- baseball_recipie -->
+<!-- ``` -->
 
-## Specify Model
+<!-- ## Specify Model -->
 
-Now that we've prepared our data, we need to specify the model we wish to execute.
+<!-- Now that we've prepared our data, we need to specify the model we wish to execute. -->
 
-Here we identify the model type, specify parameters which need tuning, and then set the 'engine' (package) we wish to do the work.
+<!-- Here we identify the model type, specify parameters which need tuning, and then set the 'engine' (package) we wish to do the work. -->
 
-```{r}
-lr_mod <-
-  logistic_reg(mode = "classification", penalty = tune(), mixture = 1) %>% 
-  set_engine(engine = "glmnet")
+<!-- ```{r} -->
+<!-- lr_mod <- -->
+<!--   logistic_reg(mode = "classification", penalty = tune(), mixture = 1) %>%  -->
+<!--   set_engine(engine = "glmnet") -->
 
-lr_mod
-```
+<!-- lr_mod -->
+<!-- ``` -->
 
-## Create Workflow
+<!-- ## Create Workflow -->
 
-Now that we've prepared the data and specified the model, we put it all together in a workflow.
+<!-- Now that we've prepared the data and specified the model, we put it all together in a workflow. -->
 
-In a workflow, we add the specified model and the preprocessing recipe.
+<!-- In a workflow, we add the specified model and the preprocessing recipe. -->
 
-```{r}
-baseball_workflow <-
-  workflow() %>% 
-  add_model(lr_mod) %>% 
-  add_recipe(baseball_recipie)
+<!-- ```{r} -->
+<!-- baseball_workflow <- -->
+<!--   workflow() %>%  -->
+<!--   add_model(lr_mod) %>%  -->
+<!--   add_recipe(baseball_recipie) -->
 
-baseball_workflow
-```
+<!-- baseball_workflow -->
+<!-- ``` -->
 
-## Train Model and Tune Parameters
+<!-- ## Train Model and Tune Parameters -->
 
-This step not only executes the model building proceedure, but it contains the structure to execute the model over a grid of parameters to tune the model and find the best parameter set.
+<!-- This step not only executes the model building proceedure, but it contains the structure to execute the model over a grid of parameters to tune the model and find the best parameter set. -->
 
-First we specify the parameters over which we desire to tune.
+<!-- First we specify the parameters over which we desire to tune. -->
 
-```{r}
-lr_reg_grid <- tibble(penalty = 10^seq(-4, -1, length.out = 30))
-```
+<!-- ```{r} -->
+<!-- lr_reg_grid <- tibble(penalty = 10^seq(-4, -1, length.out = 30)) -->
+<!-- ``` -->
 
-Next, we use `tune_grid()` to execute the model one time for each parameter set.  In this instance, this is 30 times.
+<!-- Next, we use `tune_grid()` to execute the model one time for each parameter set.  In this instance, this is 30 times. -->
 
-This function has several arguments
+<!-- This function has several arguments -->
 
-`grid`: The tibble we created that contains the parameters we have specified.
-`control`: Controls the aspects of the grid search process.  
-`metrics`: Specifies the model quality metrics we wish to save for each model in cross validation.
+<!-- `grid`: The tibble we created that contains the parameters we have specified. -->
+<!-- `control`: Controls the aspects of the grid search process.   -->
+<!-- `metrics`: Specifies the model quality metrics we wish to save for each model in cross validation. -->
 
-We also specify that we wish to save the performance metrics for each of the 30 iterations.  
+<!-- We also specify that we wish to save the performance metrics for each of the 30 iterations.   -->
 
-```{r}
-set.seed(42)
+<!-- ```{r} -->
+<!-- set.seed(42) -->
 
-lr_validation <-
-  baseball_workflow %>% 
-  tune_grid(validation_set,
-            grid = lr_reg_grid, 
-            control = control_grid(save_pred = TRUE, 
-                                   verbose = TRUE, 
-                                   allow_par = FALSE),
-            metrics = metric_set(roc_auc, accuracy))
+<!-- lr_validation <- -->
+<!--   baseball_workflow %>%  -->
+<!--   tune_grid(validation_set, -->
+<!--             grid = lr_reg_grid,  -->
+<!--             control = control_grid(save_pred = TRUE,  -->
+<!--                                    verbose = TRUE,  -->
+<!--                                    allow_par = FALSE), -->
+<!--             metrics = metric_set(roc_auc, accuracy)) -->
 
-lr_validation
-```
-
-
-Here, we extract out the best 25 models based on accuracy and plot them vs the pentalty from the tuning parameter grid.
-
-```{r}
-lr_validation %>% 
-  show_best("accuracy", n = 25) %>% 
-  arrange(penalty) %>% as.data.frame() %>% 
-  ggplot(aes(x = penalty, y = mean)) +
-  geom_point() +
-  geom_line() +
-  scale_x_log10()
-```
-
-We desire the pentalty that gives us the simplest model, with the best accuracy.  Because of that, we select the 7th smallest penalty.
-
-```{r}
-lr_best <-
-  lr_validation %>% 
-  collect_metrics() %>% 
-  filter(.metric == "accuracy") %>% 
-  slice(7)
-```
-
-We show the ROC curve for the selected model.
-
-```{r}
-lr_validation %>% 
-  collect_predictions(parameters = lr_best) %>% 
-  roc_curve(inducted, .pred_1) %>% 
-  autoplot()
-
-```
+<!-- lr_validation -->
+<!-- ``` -->
 
 
-## Build model on all training data, test on validation set.
+<!-- Here, we extract out the best 25 models based on accuracy and plot them vs the pentalty from the tuning parameter grid. -->
 
-Now that we've found the best parameter set, we need to apply this model to the entire training dataset.
+<!-- ```{r} -->
+<!-- lr_validation %>%  -->
+<!--   show_best("accuracy", n = 25) %>%  -->
+<!--   arrange(penalty) %>% as.data.frame() %>%  -->
+<!--   ggplot(aes(x = penalty, y = mean)) + -->
+<!--   geom_point() + -->
+<!--   geom_line() + -->
+<!--   scale_x_log10() -->
+<!-- ``` -->
 
-We made one tweek to our model specification.  We specify the specific penalry from our best model from cross validation. 
+<!-- We desire the pentalty that gives us the simplest model, with the best accuracy.  Because of that, we select the 7th smallest penalty. -->
 
-```{r}
-last_lr_mod <-
-  logistic_reg(mode = "classification", penalty = lr_best$penalty, mixture = 1) %>% 
-  set_engine(engine = "glmnet")
+<!-- ```{r} -->
+<!-- lr_best <- -->
+<!--   lr_validation %>%  -->
+<!--   collect_metrics() %>%  -->
+<!--   filter(.metric == "accuracy") %>%  -->
+<!--   slice(7) -->
+<!-- ``` -->
 
-last_lr_mod
-```
+<!-- We show the ROC curve for the selected model. -->
 
-We update our workflow to have the best parameter set with the function `finalize_workflow()`.
+<!-- ```{r} -->
+<!-- lr_validation %>%  -->
+<!--   collect_predictions(parameters = lr_best) %>%  -->
+<!--   roc_curve(inducted, .pred_1) %>%  -->
+<!--   autoplot() -->
 
-```{r}
-last_lr_workflow <-
-  baseball_workflow %>%
-  finalize_workflow(lr_best)
-
-last_lr_workflow
-```
-
-We fit the model on the entire training set.
-
-```{r}
-last_lr_fit <-
-  last_lr_workflow %>% 
-  last_fit(data_split)
-```
-
-We can see the performance of the model below.
-
-```{r}
-last_lr_fit %>% 
-  collect_metrics()
-```
-
-And we can take a view look at the ROC of our final model.
-
-```{r}
-last_lr_fit %>% 
-  collect_predictions() %>% 
-  roc_curve(inducted, .pred_1) %>% 
-  autoplot()
-```
-
-## Build model on all training and validation data
-
-Now, we can use the `fit()` function to build the model on the enitre `historical` data. 
-
-```{r}
-last_lr_workflow %>% 
-  fit(data = historical) %>%
-  pull_workflow_fit() %>% tidy()
-```
-
-Now that we have the model, we can make predictions on the `eligible` data.
-
-How did we do?
+<!-- ``` -->
 
 
-```{r}
-last_lr_workflow %>% 
-  fit(data = historical) %>%
-  predict(eligible, type = "prob") %>% 
-  bind_cols(eligible) %>% 
-  arrange(-.pred_1) %>% 
-  filter(.pred_1 >.4) %>%
-  mutate(across(contains("pred"), ~round(.,3))) %>% 
-  # print(n = Inf) %>% 
-  DT::datatable()
-```
+<!-- ## Build model on all training data, test on validation set. -->
+
+<!-- Now that we've found the best parameter set, we need to apply this model to the entire training dataset. -->
+
+<!-- We made one tweek to our model specification.  We specify the specific penalry from our best model from cross validation.  -->
+
+<!-- ```{r} -->
+<!-- last_lr_mod <- -->
+<!--   logistic_reg(mode = "classification", penalty = lr_best$penalty, mixture = 1) %>%  -->
+<!--   set_engine(engine = "glmnet") -->
+
+<!-- last_lr_mod -->
+<!-- ``` -->
+
+<!-- We update our workflow to have the best parameter set with the function `finalize_workflow()`. -->
+
+<!-- ```{r} -->
+<!-- last_lr_workflow <- -->
+<!--   baseball_workflow %>% -->
+<!--   finalize_workflow(lr_best) -->
+
+<!-- last_lr_workflow -->
+<!-- ``` -->
+
+<!-- We fit the model on the entire training set. -->
+
+<!-- ```{r} -->
+<!-- last_lr_fit <- -->
+<!--   last_lr_workflow %>%  -->
+<!--   last_fit(data_split) -->
+<!-- ``` -->
+
+<!-- We can see the performance of the model below. -->
+
+<!-- ```{r} -->
+<!-- last_lr_fit %>%  -->
+<!--   collect_metrics() -->
+<!-- ``` -->
+
+<!-- And we can take a view look at the ROC of our final model. -->
+
+<!-- ```{r} -->
+<!-- last_lr_fit %>%  -->
+<!--   collect_predictions() %>%  -->
+<!--   roc_curve(inducted, .pred_1) %>%  -->
+<!--   autoplot() -->
+<!-- ``` -->
+
+<!-- ## Build model on all training and validation data -->
+
+<!-- Now, we can use the `fit()` function to build the model on the entire `historical` data.  -->
+
+<!-- ```{r} -->
+<!-- last_lr_workflow %>%  -->
+<!--   fit(data = historical) %>% -->
+<!--   pull_workflow_fit() %>% tidy() -->
+<!-- ``` -->
+
+<!-- Now that we have the model, we can make predictions on the `eligible` data. -->
+
+<!-- How did we do? -->
+
+
+<!-- ```{r} -->
+<!-- last_lr_workflow %>%  -->
+<!--   fit(data = historical) %>% -->
+<!--   predict(eligible, type = "prob") %>%  -->
+<!--   bind_cols(eligible) %>%  -->
+<!--   arrange(-.pred_1) %>%  -->
+<!--   filter(.pred_1 >.4) %>% -->
+<!--   mutate(across(contains("pred"), ~round(.,3))) %>%  -->
+<!--   # print(n = Inf) %>%  -->
+<!--   DT::datatable() -->
+<!-- ``` -->
 

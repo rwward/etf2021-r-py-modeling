@@ -57,8 +57,9 @@ We desire to create a model using the `historical` data and use that model to pr
 ```{r}
 library(tidyverse)
 
-historical <- read_csv("01_data/historical_baseball.csv", col_types = cols(inducted = col_factor())) 
-eligible <- read_csv("01_data/eligible_baseball.csv") 
+historical <- read_csv("01_data/historical_baseball.csv") %>% 
+  mutate(inducted = as.factor(inducted))
+eligible <- read_csv("01_data/eligible_baseball.csv")
 
 historical
 ```

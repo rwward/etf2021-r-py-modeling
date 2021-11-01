@@ -19,16 +19,16 @@
 
 [https://www.tidymodels.org/](https://www.tidymodels.org/)
 
-Many modeling techniques in R require different syntax and different data structures.  Tidymodels provides modeling workflow that standardizes syntax and data structures regardless of the model type.  
+Many modeling techniques in R require different syntax and different data structures. Tidymodels provides a modeling workflow that standardizes syntax and data structures regardless of the model type. 
 
 ## Tidymodels Packages
 
 Like the tidyverse, tidymodels is a 'meta package' consisting of the following packages:
 
-- {[rsample](https://rsample.tidymodels.org/)}:  Creates different types of resamples and corresponding classes for analysis
-- {[recipes](https://recipes.tidymodels.org/)}:  Uses dplyr-like pipeable sequences of feature engineering steps to get data ready for modeling
-- {[workflows](https://workflows.tidymodels.org/index.html)}:   Creates an object that can bundle together your pre-processing, modeling, and post-processing steps
-- {[parsnip](https://parsnip.tidymodels.org/)}: Provides a tidy, unified interface to models than can by used to try a range of models without getting bogged down in the syntactical ninutae of the underslying packages.
+- {[rsample](https://rsample.tidymodels.org/)}: Creates different types of resamples and corresponding classes for analysis
+- {[recipes](https://recipes.tidymodels.org/)}: Uses dplyr-like pipeable sequences of feature engineering steps to get data ready for modeling
+- {[workflows](https://workflows.tidymodels.org/index.html)}:  Creates an object that can bundle together your pre-processing, modeling, and post-processing steps
+- {[parsnip](https://parsnip.tidymodels.org/)}: Provides a tidy, unified interface to models than can by used to try a range of models without getting bogged down in the syntactical minutae of the underlying packages.
 - {[tune](https://tune.tidymodels.org/)}: Facilitates hyperparameter tuning for the tidymodels packages.
 - {[yardstick](https://yardstick.tidymodels.org/index.html)}: Estimates how well models are working using tidy data principles.
 - {[infer](https://infer.tidymodels.org/index.html)}: Performs statistical inference using an expressive statistical grammar that coheres with the tidyverse design framework.
@@ -40,7 +40,7 @@ What we plan to do:
 1. Explore data
 2. Create model
    - {rsample} Split data into test/train
-   - {recipies} Preprocess data
+   - {recipes} Preprocess data
    - {parsnip} Specify model
    - {workflows} Create workflow
    - {tune} / {dials} Train and tune parameters
@@ -50,30 +50,29 @@ What we plan to do:
 
 ### Modeling Goal
 
-We desire to create a model using the `historical` data and use that model to predict who may make the Hall-of-Fame in the `eligible` data.
+We would like to create a model using the `historical` data and use that model to predict who may make the Hall of Fame in the `eligible` data.
 
 ## Explore Data
 
 ```{r}
 library(tidyverse)
 
-historical <- read_csv("01_data/historical_baseball.csv") %>% 
-  mutate(inducted = as.factor(inducted))
-eligible <- read_csv("01_data/eligible_baseball.csv")
+historical <- read_csv("01_data/historical_baseball.csv", col_types = cols(inducted = col_factor())) 
+eligible <- read_csv("01_data/eligible_baseball.csv") 
 
 historical
 ```
 
-The `historical` data contains career statistics of every baseball batter from 1880-2011 who no longer meet Hall-of-Fame eligability requirements or who have already made the hall-of-fame.
+The `historical` data contains career statistics for every baseball batter from 1880-2011 who no longer meets Hall of Fame eligibility requirements or has already made the Hall of Fame.
 
-Hall of Fame Qualifications  
-- Play at least 10 years  
-- Retired for at least 5 years  
-- Players have only 10 years of eligability   
+Hall of Fame Qualifications: 
+- Played at least 10 years 
+- Retired for at least 5 years 
+- Players have only 10 years of eligibility  
 
-The `eligible` data contains everyone who is still eligible for the Hall-of-Fame
+The `eligible` data contains everyone who is still eligible for the Hall of Fame
 
-You can see from the data below, the players who make the Hall-of-Fame tend to perform better in a few standard baseball statistics. 
+You can see from the data below, the players who make the Hall of Fame tend to perform better in a few standard baseball statistics. 
 
 ```{r}
 historical %>%
@@ -91,7 +90,7 @@ historical %>%
   ggplot(aes(x = inducted, y = value)) +
   geom_boxplot() +
   facet_wrap(~name, scales = "free")  +
-  labs(y = "",x = "Hall-of-Fame Indicator")
+  labs(y = "",x = "Hall of Fame Indicator")
 ```
 
 ## Split Data
@@ -104,9 +103,9 @@ library(tidymodels)
 
 We will split the data into a training (2/3s of the data) and testing set (1/3) of the data.
 
-We set the seed so the analysis is reproducible.  
+We set the seed so the analysis is reproducible.
 
-The output of this function is an rsplit object.  An rsplit object that can be used with the training and testing functions to extract the data in each split.
+The output of this function is an rsplit object. An rsplit object that can be used with the training and testing functions to extract the data in each split.
 
 ```{r}
 set.seed(42)
@@ -120,12 +119,12 @@ We can extract the data from the rsplit object.
 
 ```{r}
 train_data <- training(data_split)
-test_data  <- testing(data_split)
+test_data <- testing(data_split)
 
 train_data
 ```
 
-From the training data, we further split the data into a training (2/3 of the training data) and a validation set (1/3 of the training data) for parameter tuning and model assessment.
+From the training data, we further split the data into a training set (two-thirds of the training data) and a validation set (one-third of the training data) for parameter tuning and model assessment.
 
 ```{r}
 set.seed(42)
@@ -136,18 +135,18 @@ validation_set
 
 ## Prepare Data
 
-What preprocessing steps do you want to do to your date every time you model?  
+What preprocessing steps do you want to do to your data every time you model? 
 
 We need to specify the following things:
-- Specify the modeling formula  
-- Specify the 'roles' of each of the factors  
-- Do all preprocessing steps  
+- Specify the modeling formula 
+- Specify the 'roles' of each of the factors 
+- Do all preprocessing steps 
 
 In the {tidymodels} construct, we do this by creating a recipe.
 
 ```{r}
 
-baseball_recipie <-
+baseball_recipe <-
   recipe(inducted ~ ., data = train_data) %>% 
   update_role(player_id, new_role = "ID") %>% 
   step_center(all_numeric()) %>% 
@@ -155,14 +154,14 @@ baseball_recipie <-
   step_nzv(all_numeric()) %>% 
   step_rm("last_year")
 
-baseball_recipie
+baseball_recipe
 ```
 
 ## Specify Model
 
 Now that we've prepared our data, we need to specify the model we wish to execute.
 
-Here we identify the model type, specify parameters which need tuning, and then set the 'engine' (package) we wish to do the work.
+Here we identify the model type, specify parameters which need tuning, and then set our desired 'engine' (essentially, the modeling algorithm).
 
 ```{r}
 lr_mod <-
@@ -182,30 +181,30 @@ In a workflow, we add the specified model and the preprocessing recipe.
 baseball_workflow <-
   workflow() %>% 
   add_model(lr_mod) %>% 
-  add_recipe(baseball_recipie)
+  add_recipe(baseball_recipe)
 
 baseball_workflow
 ```
 
 ## Train Model and Tune Parameters
 
-This step not only executes the model building proceedure, but it contains the structure to execute the model over a grid of parameters to tune the model and find the best parameter set.
+This step not only executes the model building procedure, but also tunes the penalty hyperparameter by running the model with every penalty option in a specified search grid.
 
-First we specify the parameters over which we desire to tune.
+First we specify the parameters and search grids that we'll use for tuning.
 
 ```{r}
 lr_reg_grid <- tibble(penalty = 10^seq(-4, -1, length.out = 30))
 ```
 
-Next, we use `tune_grid()` to execute the model one time for each parameter set.  In this instance, this is 30 times.
+Next, we use `tune_grid()` to execute the model one time for each parameter set. In this instance, this is 30 times.
 
-This function has several arguments
+This function has several arguments:
 
-`grid`: The tibble we created that contains the parameters we have specified.
-`control`: Controls the apects of the grid search process.  
-`metrics`: Specifies the model quality metrics we wish to save for each model in cross validation.
+  - `grid`: The tibble we created that contains the parameters we have specified.
+  - `control`: Controls various aspects of the grid search process. 
+  - `metrics`: Specifies the model quality metrics we wish to save for each model in cross validation.
 
-We also specify that we wish to save the performance metrics for each of the 30 iterations.  
+We also specify that we wish to save the performance metrics for each of the 30 iterations. 
 
 ```{r}
 set.seed(42)
@@ -235,7 +234,7 @@ lr_validation %>%
   scale_x_log10()
 ```
 
-We desire the penalty that gives us the simplest model, with the best accuracy.  Because of that, we select the 7th smallest penalty.
+We want the simplest possible model that retains very high accuracy. Because of that, we select the 7th smallest penalty.
 
 ```{r}
 lr_best <-
@@ -258,9 +257,9 @@ lr_validation %>%
 
 ## Build model on all training data, test on validation set.
 
-Now that we've found the best parameter set, we need to apply this model to the entire training dataset.
+Now that we've found the best parameter set, we need to apply this model to the entire training set.
 
-We made one tweak to our model specification.  We specify the specific penalty from our best model from cross validation. 
+We'll make one tweak to our previous model specification: we specify our chosen penalty from the tuning process, instead of allowing the penalty to be tuned automatically. 
 
 ```{r}
 last_lr_mod <-
@@ -295,7 +294,7 @@ last_lr_fit %>%
   collect_metrics()
 ```
 
-And we can take a view look at the ROC of our final model.
+And we can take a view look at the ROC curve of our final model.
 
 ```{r}
 last_lr_fit %>% 

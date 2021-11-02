@@ -9,4 +9,4 @@ bookdown::gitbook:
       collapse: none
       before: |
         <li><a href = "https://cprobe.army.mil/shinyapps/CAA/MORS_ETF_2020/">Tutorial Home</a></li>
-  toc_depth: 1
+  toc_depth: 2

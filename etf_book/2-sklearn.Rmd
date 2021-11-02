@@ -1,4 +1,4 @@
-# Modeling in python with scikit-learn
+# Modeling in Python with scikit-learn
 
 ## Scikit-learn Overview
 
@@ -6,7 +6,7 @@ Like {tidymodels}, scikit-learn offers a suite of tools for predictive modeling 
 
 Unlike {tidymodels}, scikit-learn is a single monolithic package with functions for the entire modeling pipeline. Users will likely still want to use pandas to ingest and prepare data, and may want to use other libraries to supplement scikit-learn's data visualization capabilities, but scikit-learn will do most of the work by itself - and often with less and simpler code than tidymodels, at least for standard machine learning workflows.
 
-### Tidymodels Road Map
+### scikit-learn Road Map
 
 What we plan to do:
 
@@ -41,6 +41,7 @@ eligible = pd.read_csv('01_data/eligible_baseball.csv')
 
 historical
 ```
+
 As a reminder, the `historical` data contains career statistics for every baseball batter from 1880-2011 who no longer meets Hall of Fame eligibility requirements or has already made the Hall of Fame, while the `eligible` data contains all players who are currently eligible for Hall of Fame induction.
 
 You can see from the data below, the players who make the Hall-of-Fame tend to perform better in a few standard baseball statistics. This pandas code does the same thing as the R code in the previous chapter - it groups the historical data by whether or not the player was inducted into the Hall of Fame, and then takes the mean of each column in each group.
@@ -118,7 +119,7 @@ from sklearn.feature_selection import VarianceThreshold
 pipe_scale_lr_lasso = make_pipeline(StandardScaler(), VarianceThreshold(), LogisticRegressionCV(Cs = 10, penalty = "elasticnet", solver = "saga", l1_ratios = [1.0], cv = 10, max_iter = 1000, n_jobs = 4))
 ```
 
-It is also possible to use a parameter tuning method more like the onein the previous chapter, using `gridsearchCV` and a predefined grid of search values The scikit-learn user guide has a very detailed section on this method, available at: https://scikit-learn.org/stable/modules/grid_search.html
+It is also possible to use a parameter tuning method more like the one in the previous chapter, using `gridsearchCV` and a predefined grid of search values The scikit-learn user guide has a very detailed section on this method, available at: https://scikit-learn.org/stable/modules/grid_search.html
 
 ## Fit the Model (Using the Pipeline)
 
@@ -127,7 +128,7 @@ With our pipeline defined, fitting the model on the training data is very easy: 
 ```{python}
 pipe_scale_lr_lasso.fit(X_train, y_train)  # apply scaling on training data
 ```
-Because we used `LogisticRegressionCV()`, several of the steps we went through more carefully in the first chapter have been done for us: 
+Because we used `LogisticRegressionCV()`, several of the steps we went through more carefully in the first chapter have been done for us:
   - hyperparameter tuning was done, using an automatically-generated grid of 10 penalty values;
   - the highest-accuracy C value was selected, using the mean scores across all cross-validation runs for each value;
   - the model was refit using all of the data and the highest C value.
@@ -143,7 +144,7 @@ The most basic way to assess the performance of a fitted scikit-learn model is t
 ```{python}
 pipe_scale_lr_lasso.score(X_test, y_test)
 ```
-We can also get predictions using the `predict()` method, with our `X_test` DataFrame as the sole input. 
+We can also get predictions using the `predict()` method, with our `X_test` DataFrame as the sole input.
 
 ```{python}
 y_pred = pipe_scale_lr_lasso.predict(X_test)
@@ -159,60 +160,68 @@ pred_series.value_counts()
 ```
 While we already know that our model was 94% accurate in the test set, it's also useful to compare the predictions to the actual y_test values with a confusion matrix, especially in a classification problem like ours with just two classes - and even more so when the classes are highly unbalanced. In this situation, a predictive model can often score very well by simply predicting the more popular class (here, the negative result of 0 or "not inducted into the Hall of Fame") in nearly every case.
 
-`sklearn.metrics.confusion_matrix()` will produce a confusion matrix as a numpy array; this is useful for further processing, but not especially easy to read. 
+`sklearn.metrics.confusion_matrix()` will produce a confusion matrix as a numpy array; this is useful for further processing, but not especially easy to read.
 
 ```{python}
-import sklearn.metrics 
+import sklearn.metrics
 
 sklearn.metrics.confusion_matrix(y_test, y_pred)
 ```
+
 Fortunately, scikit-learn will also generate a much prettier and easier-to-read confusion matrix, with the help of `matplotlib.pyplot`. As expected, our model seriously underpredicted Hall of Fame induction: we had just 4 false positives and 61 false negatives! With 19 true positives, this means that we correctly predicted less than 25% of the actual Hall of Fame inductees in the test set. This makes our model look quite a bit less useful than the accuracy figure alone might have led us to believe.
 
 ```{python}
 import matplotlib.pyplot as plt
 
 sklearn.metrics.ConfusionMatrixDisplay.from_predictions(y_test, y_pred)
-plt.show()
+# plt.show()
 ```
+
+*Plot Here*
 
 ### The Decision Boundary, Precision-Recall Curves, and ROC Curves
 
 One possible way to better understand and/or ameliorate this issue is to look more closely at our decision boundary. By default, the decision boundary is 0.5: we predict whichever class our model says has a higher probability. However, we might want to lower this threshold, so that we predict the positive class (Hall of Fame induction) when the model says that a player has reasonably high but less than 50% chance. This should return more true positives, but at the cost of having more false positives, as well. One way to assess this tradeoff is the precision-recall curve. Precision is the proportion of our positive predictions that were correct; ours was quite high, at 19/23, or 0.826. Recall is the proportion of actual positives that we predicted correctly; ours was quite poor, at 19/80, or 0.2375. The precision-recall curve plots precision versus recall at different decision boundaries. Here, we'll mark our current precision and recall, at the 0.5 decision boundary, with red lines.
 
+
 ```{python}
 y_score = pipe_scale_lr_lasso.decision_function(X_test)
 sklearn.metrics.PrecisionRecallDisplay.from_predictions(y_test, y_score, name="LogisticRegressionCV")
-plt.axhline(y=19/23, color='r', linestyle='-', zorder = -10)
+# plt.axhline(y=19/23, color='r', linestyle='-', zorder = -10)
 recall_score = sklearn.metrics.recall_score(y_test, y_pred)
-plt.axvline(x = recall_score, color = 'r', linestyle = '-', zorder = -10)
+# plt.axvline(x = recall_score, color = 'r', linestyle = '-', zorder = -10)
 
-plt.show()
+# plt.show()
 ```
 
-This plot suggests that we have the option of shifting our decision boundary downward to trade precision for recall. Unfortunately, the tradeoff looks nearly linear - ideally, we would have found that we could gain a lot of recall while only losing a small amount of precision. 
+*Plot Here*
+
+This plot suggests that we have the option of shifting our decision boundary downward to trade precision for recall. Unfortunately, the tradeoff looks nearly linear - ideally, we would have found that we could gain a lot of recall while only losing a small amount of precision.
 
 Another way to assess our choice of decision boundary, and the model's performance at different boundaries, is the ROC curve, which plots the true positive rate (recall) and the true negative rate (the proportion of actual negatives that we predicted correctly.) We can plot the ROC curve using `RocCurveDisplay` from scikit-learn along with scores from `decision_function()` and the test set labels. Again, we add red lines to show the current decision boundary.
 
 ```{python}
 y_df = pipe_scale_lr_lasso.decision_function(X_test)
-# RocCurveDisplay.from_estimator(pipe_scale_lr_lasso, X_test, y_test)
+## RocCurveDisplay.from_estimator(pipe_scale_lr_lasso, X_test, y_test)
 sklearn.metrics.RocCurveDisplay.from_predictions(y_test, y_df)
-plt.axhline(y = recall_score, color='r', linestyle='-', zorder = -10) # true positive rate
-# recall_score = sklearn.metrics.recall_score(y_test, y_pred)
-plt.axvline(x = 4/999, color = 'r', linestyle = '-', zorder = -20)
+#plt.axhline(y = recall_score, color='r', linestyle='-', zorder = -10) # true positive rate
+## recall_score = sklearn.metrics.recall_score(y_test, y_pred)
+#plt.axvline(x = 4/999, color = 'r', linestyle = '-', zorder = -20)
 
-plt.show()
+# plt.show()
 ```
+
+*Plot Here*
 
 As with the Precision-Recall curve, it seems that we could shift the decision boundary downward to get a higher true positive rate - and, in this case, it looks like our false positive rate would barely budge, thanks to the very large number of true negatives in the dataset that we would still be predicting correctly.
 
-This plot also includes the area under the curve (AUC), often referred to as the AUROC for this curve. The AUROC is, of course, independent of our specific choice of decision boundary, and it is frequently used as a metric for assessing and comparing classification models. 
+This plot also includes the area under the curve (AUC), often referred to as the AUROC for this curve. The AUROC is, of course, independent of our specific choice of decision boundary, and it is frequently used as a metric for assessing and comparing classification models.
 
-Let's shift the decision boundary down to 0.33 and see how it changes our results. 
+Let's shift the decision boundary down to 0.33 and see how it changes our results.
 
 *Caveat: tuning your decision boundary on test set predictions is generally a bad idea, because it can easily lead to overfitting to the test set. We're doing it here for simplicity, but you're better off dealing with unbalanced classes while training your model, and then assessing the trained models in the test set.*
 
-As expected, we added both true and false positives, with a much higher proportional increase in the number of false positives (+275%) than true positives (+63%). This doesn't sound great, but it might be worthwhile if we care much more about detecting actual Hall of Fame inductees than we do about making a few more wrong predictions. 
+As expected, we added both true and false positives, with a much higher proportional increase in the number of false positives (+275%) than true positives (+63%). This doesn't sound great, but it might be worthwhile if we care much more about detecting actual Hall of Fame inductees than we do about making a few more wrong predictions.
 
 ```{python}
 probs = pd.DataFrame(pipe_scale_lr_lasso.predict_proba(X_test), columns = ['prob_zero', 'prob_one'])
@@ -220,8 +229,10 @@ probs = pd.DataFrame(pipe_scale_lr_lasso.predict_proba(X_test), columns = ['prob
 preds_onethird = (probs['prob_one'] > 0.33).astype(int)
 
 sklearn.metrics.ConfusionMatrixDisplay.from_predictions(y_test, preds_onethird)
-plt.show()
+# plt.show()
 ```
+
+*Plot Here*
 
 Let's also see where this puts us on our Precision-Recall and ROC curves. Our new decision boundary will be marked in blue.
 
@@ -230,30 +241,35 @@ recall_onethird = sklearn.metrics.recall_score(y_test, preds_onethird)
 precision_onethird = 31/46
 tnr_onethird = 15/999
 ```
+
 As expected, we moved to the right on the precision-recall curve, trading precision for recall.
 
 ```{python}
-# y_score = pipe_scale_lr_lasso.decision_function(X_test)
+## y_score = pipe_scale_lr_lasso.decision_function(X_test)
 sklearn.metrics.PrecisionRecallDisplay.from_predictions(y_test, y_score, name="LogisticRegressionCV")
-plt.axhline(y=19/23, color='r', linestyle='-', zorder = -10)
-plt.axhline(y=precision_onethird, color='blue', linestyle='-', zorder = -10)
+# plt.axhline(y=19/23, color='r', linestyle='-', zorder = -10)
+# plt.axhline(y=precision_onethird, color='blue', linestyle='-', zorder = -10)
 recall_score = sklearn.metrics.recall_score(y_test, y_pred)
-plt.axvline(x = recall_score, color = 'r', linestyle = '-', zorder = -10)
-plt.axvline(x = recall_onethird, color = 'blue', linestyle = '-', zorder = -10)
-plt.show()
+# plt.axvline(x = recall_score, color = 'r', linestyle = '-', zorder = -10)
+# plt.axvline(x = recall_onethird, color = 'blue', linestyle = '-', zorder = -10)
+# plt.show()
 ```
+
+*Plot Here*
 
 We also moved to the right on the ROC curve, but just barely! Our true positive rate increased quite a bit more than our false positive rate. Which of these plots and scores we care most about depends on the problem we're trying to solve and our sensitivity to false positives and negatives.
 
 ```{python}
 y_df = pipe_scale_lr_lasso.decision_function(X_test)
 sklearn.metrics.RocCurveDisplay.from_predictions(y_test, y_df)
-plt.axhline(y = recall_score, color='r', linestyle='-', zorder = -10) # true positive rate
-plt.axhline(y = recall_onethird, color='blue', linestyle='-', zorder = -10) # true positive rate
-plt.axvline(x = 4/999, color = 'r', linestyle = '-', zorder = -20)
-plt.axvline(x = tnr_onethird, color = 'blue', linestyle = '-', zorder = -20)
-plt.show()
+# plt.axhline(y = recall_score, color='r', linestyle='-', zorder = -10) # true positive rate
+# plt.axhline(y = recall_onethird, color='blue', linestyle='-', zorder = -10) # true positive rate
+# plt.axvline(x = 4/999, color = 'r', linestyle = '-', zorder = -20)
+# plt.axvline(x = tnr_onethird, color = 'blue', linestyle = '-', zorder = -20)
+# plt.show()
 ```
+
+*Plot Here*
 
 ### Class Weights
 
@@ -271,29 +287,36 @@ weighted_accuracy = pipe_scale_lr_lasso_weighted.score(X_test, y_test)
 print("Weighted accuracy: ", weighted_accuracy.round(4))
 print("Improvement: ", (weighted_accuracy - pipe_scale_lr_lasso.score(X_test, y_test)).round(4))
 ```
+
 The difference in the confusion matrix, however, is much more noticeable: our recall is up to nearly 50%, although our precision has decreased as the number of false positives grows.
 
 ```{python}
 y_pred_weighted = pipe_scale_lr_lasso_weighted.predict(X_test)
 
 sklearn.metrics.ConfusionMatrixDisplay.from_predictions(y_test, y_pred_weighted)
-plt.show()
+# plt.show()
 ```
+
+*Plot Here*
 
 Our ROC curve looks fairly similar, but the AUC has increased from 0.82 to 0.83, suggesting that this model may be very slightly better.
 
 ```{python}
 y_df_weighted = pipe_scale_lr_lasso_weighted.decision_function(X_test)
 sklearn.metrics.RocCurveDisplay.from_predictions(y_test, y_df_weighted)
-plt.show()
+# plt.show()
 ```
 
-Similarly, our Precision-Recall curve is fairly similar, but it has shifted up slightly - the Average Precision (AP) has increased from 0.51 to 0.58, another sign that we may have improved our model. 
+*Plot Here*
+
+Similarly, our Precision-Recall curve is fairly similar, but it has shifted up slightly - the Average Precision (AP) has increased from 0.51 to 0.58, another sign that we may have improved our model.
 
 ```{python}
 sklearn.metrics.PrecisionRecallDisplay.from_predictions(y_test, y_df_weighted, name="LogisticRegressionCV Weighted")
-plt.show()
+# plt.show()
 ```
+
+*Plot Here*
 
 ## Predict on eligible data
 
@@ -305,17 +328,19 @@ eligible_preds = pipe_scale_lr_lasso_weighted.predict_proba(eligible.drop('last_
 df_eligible_preds = pd.DataFrame(eligible_preds, columns = ['pred_0', 'pred_1']).set_index(eligible.index)
 elig_joined = eligible.join(df_eligible_preds).sort_values("pred_1", ascending = False).reset_index().query("pred_1 > .4")
 ```
+
 ```{r}
 py$elig_joined %>%
   select(player_id, pred_1, pred_0, everything()) %>%
   DT::datatable()
-  
+
 ```
 
 
 
 ## Conclusion
 
-For most predictive modeling tasks - especially if you are not trying to use any cutting-edge methods or dealing with very large datasets - there is no clear winner between R's tidymodels or Python's scikit-learn. They both support a very wide range of machine learning methods and make it relatively easy to optimize hyperparameters, evaluate model performance, and compare model specifications. There are differences in their APIs and in the ways that analysts construct modeling pipelines, but which one makes more sense to each user will likely come down to personal preference and familiarity with the language. 
+For most predictive modeling tasks - especially if you are not trying to use any cutting-edge methods or dealing with very large datasets - there is no clear winner between R's tidymodels or Python's scikit-learn. They both support a very wide range of machine learning methods and make it relatively easy to optimize hyperparameters, evaluate model performance, and compare model specifications. There are differences in their APIs and in the ways that analysts construct modeling pipelines, but which one makes more sense to each user will likely come down to personal preference and familiarity with the language.
 
 While building this tutorial, however, one noticeable advantage for scikit-learn did become clear: it has a very extensive and detailed user guide, full of easy-to-follow examples, arguably making it easier to learn. The tidymodels framework may close this gap over time, but the wealth of existing scikit-learn documentation and the fact that the R predictive modeling landscape is relatively fragmented and has not fully coalesced around tidymodels could slow that down.
+

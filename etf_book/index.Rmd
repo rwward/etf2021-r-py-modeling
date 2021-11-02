@@ -29,6 +29,7 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FAL
 #### need to add the following things
 1. link for this book
 2. do we need to have students pip install anything
+3. Is there a python version we need to have people install?
 
 ## Topics & Class Structure
 
@@ -55,7 +56,7 @@ Do your best to follow along.  We are happy to answer questions.  This presentat
 ## Distance Learning Challenges
 
 1. Don't be afraid to ask questions - both verbally and in chat.
-2. If you miss something we said, it's likely others have too - you'll be helping them by speaking up.
+2. If you miss something we said, it is likely others have too - you'll be helping them by speaking up.
 3. Its difficult to know how we should pace the class, so please communicate!
 
 ## Endstate
@@ -70,7 +71,7 @@ Do your best to follow along.  We are happy to answer questions.  This presentat
 Army 
 
 - Combat Engineer
-- Platoon Leader / XO / Company Commander
+- Platoon Leader / Executive Officer / Company Commander
 - Geospatial / Sapper / Route Clearance
 - Hawaii / White Sands Missile Range / Iraq / Afghanistan
 
@@ -103,7 +104,7 @@ Data Science
 
 - R user since 2011; also know some python and forgot some Stata
 - Worked for Government Accountability Office Applied Research & Methods
-- Operations Research Systems Analyst at CAA and Army Leader Dashboard/Vantage PM team
+- Operations Research Systems Analyst at the Center for Army Analysis (CAA) and Army Leader Dashboard/Vantage PM team
 
 
 ## Lets Get Started...

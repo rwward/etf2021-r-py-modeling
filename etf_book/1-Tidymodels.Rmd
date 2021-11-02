@@ -1,18 +1,3 @@
-
-<!-- --- -->
-<!-- title: "Tidymodels" -->
-<!-- author: "Dusty and Robert" -->
-<!-- date: "7/21/2021" -->
-<!-- output: html_document -->
-<!-- --- -->
-
-
-<!-- ```{r setup, include=FALSE} -->
-<!-- knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE) -->
-<!-- knitr::opts_knit$set(root.dir = rprojroot::find_rstudio_root_file()) -->
-
-<!-- ``` -->
-
 # Modeling in R With Tidymodels
 
 "The tidymodels framework is a collection of packages for modeling and machine learning using tidyverse principles."
@@ -28,7 +13,7 @@ Like the tidyverse, tidymodels is a 'meta package' consisting of the following p
 - {[rsample](https://rsample.tidymodels.org/)}: Creates different types of resamples and corresponding classes for analysis
 - {[recipes](https://recipes.tidymodels.org/)}: Uses dplyr-like pipeable sequences of feature engineering steps to get data ready for modeling
 - {[workflows](https://workflows.tidymodels.org/index.html)}:  Creates an object that can bundle together your pre-processing, modeling, and post-processing steps
-- {[parsnip](https://parsnip.tidymodels.org/)}: Provides a tidy, unified interface to models than can by used to try a range of models without getting bogged down in the syntactical minutae of the underlying packages.
+- {[parsnip](https://parsnip.tidymodels.org/)}: Provides a tidy, unified interface to models than can by used to try a range of models without getting bogged down in the syntactical minutiae of the underlying packages.
 - {[tune](https://tune.tidymodels.org/)}: Facilitates hyperparameter tuning for the tidymodels packages.
 - {[yardstick](https://yardstick.tidymodels.org/index.html)}: Estimates how well models are working using tidy data principles.
 - {[infer](https://infer.tidymodels.org/index.html)}: Performs statistical inference using an expressive statistical grammar that coheres with the tidyverse design framework.
@@ -57,7 +42,8 @@ We would like to create a model using the `historical` data and use that model t
 ```{r}
 library(tidyverse)
 
-historical <- read_csv("01_data/historical_baseball.csv", col_types = cols(inducted = col_factor())) 
+historical <- read_csv("01_data/historical_baseball.csv") %>% 
+  mutate(inducted = fct_rev(as.factor(inducted)))
 eligible <- read_csv("01_data/eligible_baseball.csv") 
 
 historical
@@ -65,12 +51,13 @@ historical
 
 The `historical` data contains career statistics for every baseball batter from 1880-2011 who no longer meets Hall of Fame eligibility requirements or has already made the Hall of Fame.
 
-Hall of Fame Qualifications: 
-- Played at least 10 years 
-- Retired for at least 5 years 
-- Players have only 10 years of eligibility  
+Hall of Fame Qualifications:
 
-The `eligible` data contains everyone who is still eligible for the Hall of Fame
+   - Played at least 10 years
+   - Retired for at least 5 years
+   - Players have only 10 years of eligibility   
+
+The `eligible` data contains everyone who is still eligible for the Hall of Fame.
 
 You can see from the data below, the players who make the Hall of Fame tend to perform better in a few standard baseball statistics. 
 
@@ -92,6 +79,16 @@ historical %>%
   facet_wrap(~name, scales = "free")  +
   labs(y = "",x = "Hall of Fame Indicator")
 ```
+
+Of note, we are dealing with imbalance classes which will take unique considerations.  To have a quality model, we hope to achieve greater than ~93% accuracy since this is what we could do by simply saying that no one should be in the Hall of Fame. 
+
+```{r}
+historical %>% 
+  count(inducted) %>% 
+  mutate(Percent = str_c(round(n / sum(n),4)*100,"%")) %>% 
+  gt::gt()
+```
+
 
 ## Split Data
 
@@ -138,9 +135,10 @@ validation_set
 What preprocessing steps do you want to do to your data every time you model? 
 
 We need to specify the following things:
-- Specify the modeling formula 
-- Specify the 'roles' of each of the factors 
-- Do all preprocessing steps 
+
+   - Specify the modeling formula
+   - Specify the 'roles' of each of the factors
+   - Do all preprocessing steps 
 
 In the {tidymodels} construct, we do this by creating a recipe.
 
@@ -287,11 +285,18 @@ last_lr_fit <-
   last_fit(data_split)
 ```
 
-We can see the performance of the model below.
+We can see the performance of the model below in the next two outputs.
 
 ```{r}
 last_lr_fit %>% 
   collect_metrics()
+
+last_lr_workflow %>% 
+  fit(data = historical) %>%
+  predict(historical, type = "prob") %>% 
+  bind_cols(historical) %>% 
+  mutate(pred_class = fct_rev(as.factor(round(.pred_1)))) %>% 
+  conf_mat(inducted, pred_class)
 ```
 
 And we can take a view look at the ROC curve of our final model.
@@ -310,8 +315,12 @@ Now, we can use the `fit()` function to build the model on the entire `historica
 ```{r}
 last_lr_workflow %>% 
   fit(data = historical) %>%
-  pull_workflow_fit() %>% tidy()
+  extract_fit_parsnip() %>% 
+  tidy()
+
 ```
+
+## Predict on new data
 
 Now that we have the model, we can make predictions on the `eligible` data.
 

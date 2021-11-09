@@ -44,7 +44,7 @@ historical
 
 As a reminder, the `historical` data contains career statistics for every baseball batter from 1880-2011 who no longer meets Hall of Fame eligibility requirements or has already made the Hall of Fame, while the `eligible` data contains all players who are currently eligible for Hall of Fame induction.
 
-You can see from the data below, the players who make the Hall-of-Fame tend to perform better in a few standard baseball statistics. This pandas code does the same thing as the R code in the previous chapter - it groups the historical data by whether or not the player was inducted into the Hall of Fame, and then takes the mean of each column in each group.
+You can see from the data below, the players who make the Hall of Fame tend to perform better in a few standard baseball statistics. This pandas code does the same thing as the R code in the previous chapter - it groups the historical data by whether or not the player was inducted into the Hall of Fame, and then takes the mean of each column in each group.
 
 ```{python}
 hist_means_inducted_groups = historical.drop('last_year', axis = 1).groupby('inducted').mean().round()
@@ -54,7 +54,7 @@ We can bring the data back into R, using RStudio's very simple Python-R interfac
 ```{r}
 py$hist_means_inducted_groups %>%
   rownames_to_column(var = "inducted") %>%
-  gt::gt()
+  gt::gt() ## renders the table 
 ```
 
 ```{r}
@@ -73,7 +73,9 @@ As we did in R, we will split the data into a training set (two-thirds of the da
 
 We set the seed so the analysis is reproducible - here, we do this using the `random_state` parameter in `train_test_split()`.
 
-Instead of an `rsplit` object that contains resampling metadata, `train_test_split()` returns four objects: X (predictor) pandas DataFrame objects for the training and test sets, and y (target) pandas Series objects for the training and test sets.
+<!-- Robert, did you mean to capitalize the 'X' below -- like its a vector?  Otherwise I made the x so it is small like the y -->
+
+Instead of an `rsplit` object that contains resampling metadata, `train_test_split()` returns four objects: x (predictor) pandas DataFrame objects for the training and test sets, and y (target) pandas Series objects for the training and test sets.
 
 Note that before splitting the data, we set the index of the dataframe to be `player_id`. This carries through to the outputs of `train_test_split()`, which all have `player_id` as a common index (and not as a predictor or target variable.) In a way, this serves a similar purpose to the `update_role(player_id, new_role = "ID")` line that we added to the recipe in R.
 
@@ -94,16 +96,16 @@ Scikit-learn's "pipelines" serve the combined purpose of "workflows" and "recipe
 
 The first two steps in our pipeline will take care of preprocessing. In the previous chapter, we centered and scaled our data; here, we'll use `StandardScaler()`, which accomplishes both of those steps. We'll also apply `VarianceThreshold()`; in its default form, this only removes zero-variance predictors, but the user can set a custom variance threshold. None of our predictors have low variance, so this feature selection mechanism does nothing to our data anyway.
 
-The third step in our pipeline is our model. Here, we've chosen `LogisticRegressionCV()`. The first three parameters should produce a model very similar to the one in the previous chapter:
-  - `Cs = 10`: the modeling function will automatically select a grid of 10 C values (inverse penalties) to search over. This is the default value. The user can also specify a specific list of C values to search over.
-  - `penalty = "elasticnet"` lets us use a hybrid L1 and L2 penalty, or a mix between Lasso and Ridge regression, much like `engine = glmnet` in R;
-  - `solver = "saga"` chooses a solver that is compatible with our other options;
-  - `l1_ratios = [1.0]` is the equivalent of `mixture = 1` in R - it gives us a pure Lasso regression;
+The third step in our pipeline is our model. Here, we've chosen `LogisticRegressionCV()`. The first three parameters should produce a model very similar to the one in the previous chapter:  
+  - `Cs = 10`: the modeling function will automatically select a grid of 10 C values (inverse penalties) to search over. This is the default value. The user can also specify a specific list of C values to search over.  
+  - `penalty = "elasticnet"` lets us use a hybrid L1 and L2 penalty, or a mix between Lasso and Ridge regression, much like `engine = glmnet` in R;  
+  - `solver = "saga"` chooses a solver that is compatible with our other options;  
+  - `l1_ratios = [1.0]` is the equivalent of `mixture = 1` in R - it gives us a pure Lasso regression;  
   - `max_iter = 1000` allows the solver to attempt up to 1000 iterations as it searches for a solution, because the default of 100 was insufficient for this model specification; 
 
-We also have two parameters related to the cross-validation (CV) part of the model specification: 
-  - `cv = 10`. This means that the data will be split into ten folds, and the model will be fit ten times for each set of hyperparameters in an automatically generated search grid, with one fold being held out as a validation set for computing accuracy in each run. This process will allow the model to tune the size of penalty, which we have not specified explicitly.
-  - `refit = True`: the function will find the best C (inverse penalty) value by averaging the cross-validation scores of each one, and then refit the model using the best C value on all of the data.
+We also have two parameters related to the cross-validation (CV) part of the model specification:  
+  - `cv = 10`. This means that the data will be split into ten folds, and the model will be fit ten times for each set of hyperparameters in an automatically generated search grid, with one fold being held out as a validation set for computing accuracy in each run. This process will allow the model to tune the size of penalty, which we have not specified explicitly.  
+  - `refit = True`: the function will find the best C (inverse penalty) value by averaging the cross-validation scores of each one, and then refit the model using the best C value on all of the data.  
 
 Finally, we set `n_jobs = 4` to allow for multithreading. In my own highly unscientific testing, moving from 1 to 4 threads reduces model fit time from 15 seconds to 6 seconds.
 
@@ -318,7 +320,7 @@ sklearn.metrics.PrecisionRecallDisplay.from_predictions(y_test, y_df_weighted, n
 
 *Plot Here*
 
-## Predict on eligible data
+## Predict on Eligible Data
 
 As we did in R, let's make predictions on the `eligible` dataset, using our class-weighted model.
 

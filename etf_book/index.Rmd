@@ -1,6 +1,6 @@
 ---
 title: "Modeling in R and Python"
-author: "MAJ Dusty Turner and Robert Ward"
+author: "MAJ Dusty Turner and Mr Robert Ward"
 date: "7 DEC 2021"
 output: bookdown::gitbook
 # output:
@@ -48,10 +48,10 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FAL
 We assume you have:
 
 1. A working knowledge of R and RStudio and/or Python;
-2. Some experience with contemporary tidy coding concepts;
+2. Some experience with contemporary 'tidy' coding concepts;
 3. An understanding of modeling principals. 
 
-Do your best to follow along.  We are happy to answer questions.  This presentation is available at [this link](www.google.com)
+Do your best to follow along.  We are happy to answer questions.  This presentation is available here  [MORS ETF  2021](https://dustysturner.com/MORS_ETF_2021/)
 
 ## Distance Learning Challenges
 
@@ -119,3 +119,10 @@ install.packages(c("tidyverse", "tidymodels"), dependencies = TRUE)
 pip install something 
 ```
 
+### Follow Along!
+
+[https://dustysturner.com/MORS_ETF_2021/](https://dustysturner.com/MORS_ETF_2021/)
+
+<center>
+![](img/ETF_QR.png){ width=25% }
+</center>

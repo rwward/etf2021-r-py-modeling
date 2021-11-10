@@ -8,5 +8,5 @@ bookdown::gitbook:
     toc:
       collapse: none
       before: |
-        <li><a href = "https://cprobe.army.mil/shinyapps/CAA/MORS_ETF_2021/">Tutorial Home</a></li>
+        <li><a href = "https://dustysturner.com/MORS_ETF_2021/">Tutorial Home</a></li>
   toc_depth: 2

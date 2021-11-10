@@ -1,6 +1,6 @@
 # Modeling in Python with scikit-learn
 
-## Scikit-learn Overview
+## scikit-learn Overview
 
 Like {tidymodels}, scikit-learn offers a suite of tools for predictive modeling and machine learning: it will help you split data, preprocess model inputs, fit models, and compare and assess them.
 
@@ -176,10 +176,9 @@ Fortunately, scikit-learn will also generate a much prettier and easier-to-read 
 import matplotlib.pyplot as plt
 
 sklearn.metrics.ConfusionMatrixDisplay.from_predictions(y_test, y_pred)
-# plt.show()
+plt.show()
 ```
 
-*Plot Here*
 
 ### The Decision Boundary, Precision-Recall Curves, and ROC Curves
 
@@ -189,14 +188,12 @@ One possible way to better understand and/or ameliorate this issue is to look mo
 ```{python}
 y_score = pipe_scale_lr_lasso.decision_function(X_test)
 sklearn.metrics.PrecisionRecallDisplay.from_predictions(y_test, y_score, name="LogisticRegressionCV")
-# plt.axhline(y=19/23, color='r', linestyle='-', zorder = -10)
+plt.axhline(y=19/23, color='r', linestyle='-', zorder = -10)
 recall_score = sklearn.metrics.recall_score(y_test, y_pred)
-# plt.axvline(x = recall_score, color = 'r', linestyle = '-', zorder = -10)
+plt.axvline(x = recall_score, color = 'r', linestyle = '-', zorder = -10)
 
-# plt.show()
+plt.show()
 ```
-
-*Plot Here*
 
 This plot suggests that we have the option of shifting our decision boundary downward to trade precision for recall. Unfortunately, the tradeoff looks nearly linear - ideally, we would have found that we could gain a lot of recall while only losing a small amount of precision.
 
@@ -206,14 +203,12 @@ Another way to assess our choice of decision boundary, and the model's performan
 y_df = pipe_scale_lr_lasso.decision_function(X_test)
 ## RocCurveDisplay.from_estimator(pipe_scale_lr_lasso, X_test, y_test)
 sklearn.metrics.RocCurveDisplay.from_predictions(y_test, y_df)
-#plt.axhline(y = recall_score, color='r', linestyle='-', zorder = -10) # true positive rate
+plt.axhline(y = recall_score, color='r', linestyle='-', zorder = -10) # true positive rate
 ## recall_score = sklearn.metrics.recall_score(y_test, y_pred)
-#plt.axvline(x = 4/999, color = 'r', linestyle = '-', zorder = -20)
+plt.axvline(x = 4/999, color = 'r', linestyle = '-', zorder = -20)
 
-# plt.show()
+plt.show()
 ```
-
-*Plot Here*
 
 As with the Precision-Recall curve, it seems that we could shift the decision boundary downward to get a higher true positive rate - and, in this case, it looks like our false positive rate would barely budge, thanks to the very large number of true negatives in the dataset that we would still be predicting correctly.
 
@@ -231,10 +226,8 @@ probs = pd.DataFrame(pipe_scale_lr_lasso.predict_proba(X_test), columns = ['prob
 preds_onethird = (probs['prob_one'] > 0.33).astype(int)
 
 sklearn.metrics.ConfusionMatrixDisplay.from_predictions(y_test, preds_onethird)
-# plt.show()
+plt.show()
 ```
-
-*Plot Here*
 
 Let's also see where this puts us on our Precision-Recall and ROC curves. Our new decision boundary will be marked in blue.
 
@@ -249,29 +242,25 @@ As expected, we moved to the right on the precision-recall curve, trading precis
 ```{python}
 ## y_score = pipe_scale_lr_lasso.decision_function(X_test)
 sklearn.metrics.PrecisionRecallDisplay.from_predictions(y_test, y_score, name="LogisticRegressionCV")
-# plt.axhline(y=19/23, color='r', linestyle='-', zorder = -10)
-# plt.axhline(y=precision_onethird, color='blue', linestyle='-', zorder = -10)
+plt.axhline(y=19/23, color='r', linestyle='-', zorder = -10)
+plt.axhline(y=precision_onethird, color='blue', linestyle='-', zorder = -10)
 recall_score = sklearn.metrics.recall_score(y_test, y_pred)
-# plt.axvline(x = recall_score, color = 'r', linestyle = '-', zorder = -10)
-# plt.axvline(x = recall_onethird, color = 'blue', linestyle = '-', zorder = -10)
-# plt.show()
+plt.axvline(x = recall_score, color = 'r', linestyle = '-', zorder = -10)
+plt.axvline(x = recall_onethird, color = 'blue', linestyle = '-', zorder = -10)
+plt.show()
 ```
-
-*Plot Here*
 
 We also moved to the right on the ROC curve, but just barely! Our true positive rate increased quite a bit more than our false positive rate. Which of these plots and scores we care most about depends on the problem we're trying to solve and our sensitivity to false positives and negatives.
 
 ```{python}
 y_df = pipe_scale_lr_lasso.decision_function(X_test)
 sklearn.metrics.RocCurveDisplay.from_predictions(y_test, y_df)
-# plt.axhline(y = recall_score, color='r', linestyle='-', zorder = -10) # true positive rate
-# plt.axhline(y = recall_onethird, color='blue', linestyle='-', zorder = -10) # true positive rate
-# plt.axvline(x = 4/999, color = 'r', linestyle = '-', zorder = -20)
-# plt.axvline(x = tnr_onethird, color = 'blue', linestyle = '-', zorder = -20)
-# plt.show()
+plt.axhline(y = recall_score, color='r', linestyle='-', zorder = -10) # true positive rate
+plt.axhline(y = recall_onethird, color='blue', linestyle='-', zorder = -10) # true positive rate
+plt.axvline(x = 4/999, color = 'r', linestyle = '-', zorder = -20)
+plt.axvline(x = tnr_onethird, color = 'blue', linestyle = '-', zorder = -20)
+plt.show()
 ```
-
-*Plot Here*
 
 ### Class Weights
 
@@ -296,29 +285,23 @@ The difference in the confusion matrix, however, is much more noticeable: our re
 y_pred_weighted = pipe_scale_lr_lasso_weighted.predict(X_test)
 
 sklearn.metrics.ConfusionMatrixDisplay.from_predictions(y_test, y_pred_weighted)
-# plt.show()
+plt.show()
 ```
-
-*Plot Here*
 
 Our ROC curve looks fairly similar, but the AUC has increased from 0.82 to 0.83, suggesting that this model may be very slightly better.
 
 ```{python}
 y_df_weighted = pipe_scale_lr_lasso_weighted.decision_function(X_test)
 sklearn.metrics.RocCurveDisplay.from_predictions(y_test, y_df_weighted)
-# plt.show()
+plt.show()
 ```
-
-*Plot Here*
 
 Similarly, our Precision-Recall curve is fairly similar, but it has shifted up slightly - the Average Precision (AP) has increased from 0.51 to 0.58, another sign that we may have improved our model.
 
 ```{python}
 sklearn.metrics.PrecisionRecallDisplay.from_predictions(y_test, y_df_weighted, name="LogisticRegressionCV Weighted")
-# plt.show()
+plt.show()
 ```
-
-*Plot Here*
 
 ## Predict on Eligible Data
 

@@ -1,7 +1,7 @@
 ---
 title: "Modeling in R and Python"
 author: "MAJ Dusty Turner and Mr Robert Ward"
-date: "7 DEC 2021"
+date: "8 DEC 2021"
 output: bookdown::gitbook
 # output:
 #   bookdown::html_book:
@@ -26,10 +26,10 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FAL
 
 **Disclaimer:**  The appearance of U.S. Department of Defense (DoD) visual information does not imply or constitute DoD endorsement.  The views expressed in this presentation are those only of the author and do not represent the official position of the U.S. Army, DoD, or the federal government.
 
-#### need to add the following things
-1. link for this book
-2. do we need to have students pip install anything
-3. Is there a python version we need to have people install?
+<!-- #### need to add the following things -->
+<!-- 1. link for this book -->
+<!-- 2. do we need to have students pip install anything -->
+<!-- 3. Is there a python version we need to have people install? -->
 
 ## Topics & Class Structure
 
@@ -115,9 +115,10 @@ Data Science
 install.packages(c("tidyverse", "tidymodels"), dependencies = TRUE)
 ```
 
-```{python eval = FALSE, include = TRUE}
-pip install something 
-```
+
+<!-- ```{python eval = FALSE, include = TRUE} -->
+<!-- pip install something  -->
+<!-- ``` -->
 
 ### Follow Along!
 

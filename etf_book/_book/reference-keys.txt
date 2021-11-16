@@ -39,3 +39,14 @@ the-decision-boundary-precision-recall-curves-and-roc-curves
 class-weights
 predict-on-eligible-data
 conclusion
+output
+specify-grid-of-training-parameters
+train-model
+change-model-to-random-forest
+update-model-type
+update-workflow
+update-tuning-parameters
+re-execute-cross-validation
+explore-tuning-parameters
+select-best-tuning-parameters-for-random-forest
+show-roc-curve-for-best-random-forest-model

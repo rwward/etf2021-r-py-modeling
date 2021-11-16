@@ -1,5 +1,10 @@
 # Modeling in R With Tidymodels
 
+```{r setup, include=FALSE, cache = FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FALSE)
+```
+
+
 "The tidymodels framework is a collection of packages for modeling and machine learning using tidyverse principles."
 
 [https://www.tidymodels.org/](https://www.tidymodels.org/)
@@ -23,6 +28,8 @@ Like the tidyverse, tidymodels is a 'meta package' consisting of the following p
 What we plan to do:
 
 1. Explore data
+   - {dplyr} Manipulate data
+   - {ggplot2} Visualize data
 2. Create model
    - {rsample} Split data into test/train
    - {recipes} Preprocess data
@@ -35,15 +42,17 @@ What we plan to do:
 
 ### Modeling Goal
 
-We would like to create a model using the `historical` data and use that model to predict who may make the Hall of Fame in the `eligible` data.
+We would like to create a model to predict which future Major League Baseball players will make the Hall of Fame.  We will use `historical` data to build a model and then use that model to predict who may make the Hall of Fame from the players in the `eligible` data.
 
 ## Explore Data
 
 ```{r}
 library(tidyverse)
 
-historical <- read_csv("01_data/historical_baseball.csv") %>% 
-  mutate(inducted = fct_rev(as.factor(inducted)))
+historical <- read_csv("01_data/historical_baseball.csv") %>%
+  mutate(inducted = fct_rev(as.factor(inducted))) %>% 
+  filter(ab > 250)
+
 eligible <- read_csv("01_data/eligible_baseball.csv") 
 
 historical
@@ -184,7 +193,7 @@ baseball_workflow <-
 baseball_workflow
 ```
 
-## Train Model and Tune Parameters
+## Specify Grid of Training Parameters
 
 This step not only executes the model building procedure, but also tunes the penalty hyperparameter by running the model with every penalty option in a specified search grid.
 
@@ -195,6 +204,8 @@ lr_reg_grid <- tibble(penalty = 10^seq(-4, -1, length.out = 30))
 
 lr_reg_grid
 ```
+
+## Train Model
 
 Next, we use `tune_grid()` to execute the model one time for each parameter set. In this instance, this is 30 times.
 
@@ -310,15 +321,148 @@ last_lr_fit %>%
   autoplot()
 ```
 
-## Build Model on all Training and Validation Data
+## Change Model to Random Forest
+
+### Update Model Type
+
+```{r}
+rf_mod <-
+  rand_forest(mode = "classification", mtry = tune(), min_n = tune(), trees = tune()) %>% 
+  set_engine(engine = "randomForest")
+
+rf_mod
+```
+
+### Update Workflow
+
+```{r}
+baseball_workflow_rf <-
+  workflow() %>% 
+  add_model(rf_mod) %>% 
+  add_recipe(baseball_recipe)
+
+baseball_workflow_rf
+```
+
+### Update Tuning Parameters
+
+```{r}
+rf_reg_grid <- dials::grid_latin_hypercube(mtry(c(1,10)), min_n(), trees(), size = 30)
+
+rf_reg_grid
+```
+
+### Re Execute Cross Validation
+
+```{r}
+set.seed(42)
+
+rf_validation <-
+  baseball_workflow_rf %>% 
+  tune_grid(validation_set,
+            grid = rf_reg_grid, 
+            control = control_grid(save_pred = TRUE, 
+                                   verbose = TRUE, 
+                                   allow_par = FALSE),
+            metrics = metric_set(roc_auc, accuracy))
+
+rf_validation
+```
+
+### Explore Tuning Parameters
+
+```{r}
+rf_validation %>%
+  collect_metrics() %>%
+  filter(.metric == "accuracy") %>%
+  pivot_longer(cols = mtry:min_n) %>%
+  mutate(best_mod = mean == max(mean)) %>% 
+  ggplot(aes(x = value, y = mean)) +
+  # geom_line(alpha = 0.5, size = 1.5) +
+  geom_point(aes(color = best_mod)) +
+  facet_wrap(~name, scales = "free_x") +
+  scale_x_continuous(breaks = scales::pretty_breaks()) +
+  labs(y = "Accuracy", x = "", color = "Best Model", title = "Random Forest Cross Validation Tuning Parameters")
+```
+
+### Select Best Tuning Parameters for Random Forest
+
+```{r}
+rf_best <-
+  rf_validation %>% 
+  collect_metrics() %>% 
+  filter(.metric == "accuracy") %>% 
+  arrange(desc(mean)) %>% 
+  slice(1)
+```
+
+### Show ROC Curve for Best Random Forest Model
+
+```{r}
+rf_validation %>% 
+  collect_predictions(parameters = rf_best) %>% 
+  roc_curve(inducted, .pred_1) %>% 
+  autoplot()
+```
+
+```{r}
+last_rf_mod <-
+  rand_forest(mode = "classification", mtry = rf_best$mtry, trees = rf_best$trees, min_n = rf_best$min_n) %>% 
+  set_engine(engine = "randomForest")
+
+last_rf_mod
+```
+
+We update our workflow to have the best parameter set with the function `finalize_workflow()`.
+
+```{r}
+last_rf_workflow <-
+  baseball_workflow_rf %>%
+  finalize_workflow(rf_best)
+
+last_rf_workflow
+```
+
+We fit the model on the entire training set.
+
+```{r}
+last_rf_fit <-
+  last_rf_workflow %>% 
+  last_fit(data_split)
+```
+
+We can see the performance of the model below in the next two outputs.
+
+```{r}
+last_rf_fit %>% 
+  collect_metrics()
+
+last_rf_workflow %>% 
+  fit(data = historical) %>%
+  predict(historical, type = "prob") %>% 
+  bind_cols(historical) %>% 
+  mutate(pred_class = fct_rev(as.factor(round(.pred_1)))) %>% 
+  conf_mat(inducted, pred_class)
+```
+
+And we can take a view look at the ROC curve of our final model.
+
+```{r}
+last_lr_fit %>% 
+  collect_predictions() %>% 
+  roc_curve(inducted, .pred_1) %>% 
+  autoplot()
+```
+
+
+## Build Model on all Training and Validation Data Using the Best Model
 
 Now, we can use the `fit()` function to build the model on the entire `historical` data. 
 
 ```{r}
-last_lr_workflow %>% 
+last_rf_workflow %>% 
   fit(data = historical) %>%
-  extract_fit_parsnip() %>% 
-  tidy()
+  extract_fit_parsnip() 
 
 ```
 
@@ -330,7 +474,7 @@ How did we do?
 
 
 ```{r}
-last_lr_workflow %>% 
+last_rf_workflow %>% 
   fit(data = historical) %>%
   predict(eligible, type = "prob") %>% 
   bind_cols(eligible) %>% 

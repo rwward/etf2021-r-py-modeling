@@ -50,3 +50,4 @@ re-execute-cross-validation
 explore-tuning-parameters
 select-best-tuning-parameters-for-random-forest
 show-roc-curve-for-best-random-forest-model
+build-model-on-all-training-and-validation-data-using-the-best-model

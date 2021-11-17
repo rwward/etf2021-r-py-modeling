@@ -264,14 +264,15 @@ lr_validation %>%
   scale_x_log10()
 ```
 
-We want the simplest possible model that retains very high accuracy. Because of that, we select the 7th smallest penalty.
+We select the penalty that results in the highest accuracy.
 
 ```{r}
 lr_best <-
   lr_validation %>% 
   collect_metrics() %>% 
   filter(.metric == "accuracy") %>% 
-  slice(7)
+  filter(mean == max(mean)) %>% 
+  slice(1)
 ```
 
 We show the Receiver Operator Characteristic (ROC) curve for the selected model.

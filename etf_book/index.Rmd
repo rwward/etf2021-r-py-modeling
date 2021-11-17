@@ -51,6 +51,8 @@ We assume you have:
 2. Some experience with contemporary 'tidy' coding concepts;
 3. An understanding of modeling principals. 
 
+Let's take an informal poll to see everyone's experience / comfort level with these topics.
+
 Do your best to follow along.  We are happy to answer questions.  This presentation is available here  [MORS ETF  2021](https://dustysturner.com/MORS_ETF_2021/)
 
 ## Tutorial Challenges

@@ -4,7 +4,7 @@
 
 Like {tidymodels}, scikit-learn offers a suite of tools for predictive modeling and machine learning: it will help you split data, preprocess model inputs, fit models, and compare and assess them.
 
-Unlike {tidymodels}, scikit-learn is a single monolithic package with functions for the entire modeling pipeline. Users will likely still want to use pandas to ingest and prepare data, and may want to use other libraries to supplement scikit-learn's data visualization capabilities, but scikit-learn will do most of the work by itself - and often with less and simpler code than tidymodels, at least for standard machine learning workflows.
+Unlike {tidymodels}, scikit-learn is a single monolithic package with functions for the entire modeling pipeline. Users will likely still want to use the {pandas} library to ingest and prepare data, and may want to use other libraries to supplement scikit-learn's data visualization capabilities, but scikit-learn will do most of the work by itself - and often with less and simpler code than tidymodels, at least for standard machine learning workflows.
 
 ### scikit-learn Road Map
 
@@ -44,7 +44,7 @@ historical
 
 As a reminder, the `historical` data contains career statistics for every baseball batter from 1880-2011 who no longer meets Hall of Fame eligibility requirements or has already made the Hall of Fame, while the `eligible` data contains all players who are currently eligible for Hall of Fame induction.
 
-You can see from the data below, the players who make the Hall of Fame tend to perform better in a few standard baseball statistics. This pandas code does the same thing as the R code in the previous chapter - it groups the historical data by whether or not the player was inducted into the Hall of Fame, and then takes the mean of each column in each group.
+You can see from the data below, the players who make the Hall of Fame tend to perform better in a few standard baseball statistics. This pandas code does the same thing as the R code in Chapter 2 - it groups the historical data by whether or not the player was inducted into the Hall of Fame, and then takes the mean of each column in each group.
 
 ```{python}
 hist_means_inducted_groups = historical.drop('last_year', axis = 1).groupby('inducted').mean().round()
@@ -94,20 +94,20 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, random_state=0, test_s
 
 Scikit-learn's "pipelines" serve the combined purpose of "workflows" and "recipes" in {tidymodels}. They allow you to define a set of preprocessing and modeling steps that you can then apply to any dataset. They are defined by the function `make_pipeline()`, with the steps, in order, as arguments.
 
-The first two steps in our pipeline will take care of preprocessing. In the previous chapter, we centered and scaled our data; here, we'll use `StandardScaler()`, which accomplishes both of those steps. We'll also apply `VarianceThreshold()`; in its default form, this only removes zero-variance predictors, but the user can set a custom variance threshold. None of our predictors have low variance, so this feature selection mechanism does nothing to our data anyway.
+The first two steps in our pipeline will take care of preprocessing. In Chapter 2, we centered and scaled our data; here, we'll use `StandardScaler()`, which accomplishes both of those steps. We'll also apply `VarianceThreshold()`; in its default form, this only removes zero-variance predictors, but the user can set a custom variance threshold. None of our predictors have low variance, so this feature selection mechanism does nothing to our data anyway.
 
-The third step in our pipeline is our model. Here, we've chosen `LogisticRegressionCV()`. The first three parameters should produce a model very similar to the one in the previous chapter:  
+The third step in our pipeline is our model. Here, we've chosen `LogisticRegressionCV()`. The first three parameters should produce a model very similar to the one in Chapter 2:  
   - `Cs = 10`: the modeling function will automatically select a grid of 10 C values (inverse penalties) to search over. This is the default value. The user can also specify a specific list of C values to search over.  
   - `penalty = "elasticnet"` lets us use a hybrid L1 and L2 penalty, or a mix between Lasso and Ridge regression, much like `engine = glmnet` in R;  
   - `solver = "saga"` chooses a solver that is compatible with our other options;  
   - `l1_ratios = [1.0]` is the equivalent of `mixture = 1` in R - it gives us a pure Lasso regression;  
-  - `max_iter = 1000` allows the solver to attempt up to 1000 iterations as it searches for a solution, because the default of 100 was insufficient for this model specification; 
+  - `max_iter = 1000` allows the solver to attempt up to 1,000 iterations as it searches for a solution, because the default of 100 was insufficient for this model specification; 
 
 We also have two parameters related to the cross-validation (CV) part of the model specification:  
-  - `cv = 10`. This means that the data will be split into ten folds, and the model will be fit ten times for each set of hyperparameters in an automatically generated search grid, with one fold being held out as a validation set for computing accuracy in each run. This process will allow the model to tune the size of penalty, which we have not specified explicitly.  
+  - `cv = 10`. This means that the data will be split into 10 folds, and the model will be fit 10 times for each set of hyperparameters in an automatically generated search grid, with one fold being held out as a validation set for computing accuracy in each run. This process will allow the model to tune the size of penalty, which we have not specified explicitly.  
   - `refit = True`: the function will find the best C (inverse penalty) value by averaging the cross-validation scores of each one, and then refit the model using the best C value on all of the data.  
 
-Finally, we set `n_jobs = 4` to allow for multithreading. In my own highly unscientific testing, moving from 1 to 4 threads reduces model fit time from 15 seconds to 6 seconds.
+Finally, we set `n_jobs = 4` to allow for multithreading. In my own highly unscientific testing, moving from one to four threads reduces model fit time from 15 seconds to 6 seconds.
 
 ```{python}
 from sklearn import preprocessing
@@ -121,7 +121,7 @@ from sklearn.feature_selection import VarianceThreshold
 pipe_scale_lr_lasso = make_pipeline(StandardScaler(), VarianceThreshold(), LogisticRegressionCV(Cs = 10, penalty = "elasticnet", solver = "saga", l1_ratios = [1.0], cv = 10, max_iter = 1000, n_jobs = 4))
 ```
 
-It is also possible to use a parameter tuning method more like the one in the previous chapter, using `gridsearchCV` and a predefined grid of search values The scikit-learn user guide has a very detailed section on this method, available at: https://scikit-learn.org/stable/modules/grid_search.html
+It is also possible to use a parameter tuning method more like the one in Chapter 2, using `gridsearchCV` and a predefined grid of search values The scikit-learn user guide has a very detailed section on this method, available at: https://scikit-learn.org/stable/modules/grid_search.html
 
 ## Fit the Model (Using the Pipeline)
 
@@ -130,12 +130,12 @@ With our pipeline defined, fitting the model on the training data is very easy: 
 ```{python}
 pipe_scale_lr_lasso.fit(X_train, y_train)  # apply scaling on training data
 ```
-Because we used `LogisticRegressionCV()`, several of the steps we went through more carefully in the first chapter have been done for us:
+Because we used `LogisticRegressionCV()`, several of the steps we went through more carefully in Chapter 2 have been done for us:
   - hyperparameter tuning was done, using an automatically-generated grid of 10 penalty values;
   - the highest-accuracy C value was selected, using the mean scores across all cross-validation runs for each value;
   - the model was refit using all of the data and the highest C value.
 
-In some cases, it may be a better practice not to allow all of these decisions to be made automatically by an algorithm. It is, of course, possible to more precisely replicate the process shown in Chapter 1, by manually selecting a search grid for the penalty value, plotting and evaluating each penalty value, and manually refitting on the training set. For instance, (see here)[https://scikit-learn.org/stable/auto_examples/model_selection/plot_grid_search_refit_callable.html#sphx-glr-auto-examples-model-selection-plot-grid-search-refit-callable-py] for an example of how to "balance model complexity and cross-validated score," which, in this case, means finding a model with the least number of components from principal components analysis while maintaining a good-enough accuracy score.
+In some cases, it may be a better practice not to allow an algorithm to make all of these decisions automatically. It is, of course, possible to more precisely replicate the process shown in Chapter 1, by manually selecting a search grid for the penalty value, plotting, and evaluating each penalty value, and manually refitting on the training set. For instance, (see here)[https://scikit-learn.org/stable/auto_examples/model_selection/plot_grid_search_refit_callable.html#sphx-glr-auto-examples-model-selection-plot-grid-search-refit-callable-py] for an example of how to "balance model complexity and cross-validated score," which, in this case, means finding a model with the least number of components from principal components analysis while maintaining a good-enough accuracy score.
 
 ## Score and Evaluate the Model
 
@@ -160,7 +160,7 @@ It looks like our model predicted that just 23 out of 1079 players in the test s
 pred_series = pd.Series(y_pred)
 pred_series.value_counts()
 ```
-While we already know that our model was 94% accurate in the test set, it's also useful to compare the predictions to the actual y_test values with a confusion matrix, especially in a classification problem like ours with just two classes - and even more so when the classes are highly unbalanced. In this situation, a predictive model can often score very well by simply predicting the more popular class (here, the negative result of 0 or "not inducted into the Hall of Fame") in nearly every case.
+While we already know that our model was 94% accurate in the test set, it's also useful to compare the predictions to the actual y_test values with a confusion matrix, especially in a classification problem like ours with just two classes - and even more so when the classes are highly unbalanced. In this situation, a predictive model can often score very well by simply predicting the more popular class (here, the negative result of zero or "not inducted into the Hall of Fame") in nearly every case.
 
 `sklearn.metrics.confusion_matrix()` will produce a confusion matrix as a numpy array; this is useful for further processing, but not especially easy to read.
 
@@ -180,9 +180,9 @@ plt.show()
 ```
 
 
-### The Decision Boundary, Precision-Recall Curves, and ROC Curves
+### The Decision Boundary, Precision-Recall Curves, and Receiver Operating Characteristic (ROC) Curves
 
-One possible way to better understand and/or ameliorate this issue is to look more closely at our decision boundary. By default, the decision boundary is 0.5: we predict whichever class our model says has a higher probability. However, we might want to lower this threshold, so that we predict the positive class (Hall of Fame induction) when the model says that a player has reasonably high but less than 50% chance. This should return more true positives, but at the cost of having more false positives, as well. One way to assess this tradeoff is the precision-recall curve. Precision is the proportion of our positive predictions that were correct; ours was quite high, at 19/23, or 0.826. Recall is the proportion of actual positives that we predicted correctly; ours was quite poor, at 19/80, or 0.2375. The precision-recall curve plots precision versus recall at different decision boundaries. Here, we'll mark our current precision and recall, at the 0.5 decision boundary, with red lines.
+One possible way to better understand and/or ameliorate this issue is to look more closely at our decision boundary. By default, the decision boundary is 0.5: we predict whichever class our model says has a higher probability. However, we might want to lower this threshold, so that we predict the positive class (Hall of Fame induction) when the model says that a player has reasonably high but less than 50% chance. This should return more true positives, but at the cost of having more false positives, as well. One way to assess this tradeoff is the precision-recall curve. Precision is the proportion of our positive predictions that were correct; ours was quite high, at 19/23, or 0.83. Recall is the proportion of actual positives that we predicted correctly; ours was quite poor, at 19/80, or 0.24. The precision-recall curve plots precision versus recall at different decision boundaries. Here, we'll mark our current precision and recall, at the 0.5 decision boundary, with red lines.
 
 
 ```{python}
@@ -210,7 +210,7 @@ plt.axvline(x = 4/999, color = 'r', linestyle = '-', zorder = -20)
 plt.show()
 ```
 
-As with the Precision-Recall curve, it seems that we could shift the decision boundary downward to get a higher true positive rate - and, in this case, it looks like our false positive rate would barely budge, thanks to the very large number of true negatives in the dataset that we would still be predicting correctly.
+As with the precision-recall curve, it seems that we could shift the decision boundary downward to get a higher true positive rate - and, in this case, it looks like our false positive rate would barely budge, thanks to the very large number of true negatives in the dataset that we would still be predicting correctly.
 
 This plot also includes the area under the curve (AUC), often referred to as the AUROC for this curve. The AUROC is, of course, independent of our specific choice of decision boundary, and it is frequently used as a metric for assessing and comparing classification models.
 
@@ -229,7 +229,7 @@ sklearn.metrics.ConfusionMatrixDisplay.from_predictions(y_test, preds_onethird)
 plt.show()
 ```
 
-Let's also see where this puts us on our Precision-Recall and ROC curves. Our new decision boundary will be marked in blue.
+Let's also see where this puts us on our precision-recall and ROC curves. Our new decision boundary will be marked in blue.
 
 ```{python}
 recall_onethird = sklearn.metrics.recall_score(y_test, preds_onethird)
@@ -296,7 +296,7 @@ sklearn.metrics.RocCurveDisplay.from_predictions(y_test, y_df_weighted)
 plt.show()
 ```
 
-Similarly, our Precision-Recall curve is fairly similar, but it has shifted up slightly - the Average Precision (AP) has increased from 0.51 to 0.58, another sign that we may have improved our model.
+Similarly, our precision-recall curve is fairly similar, but it has shifted up slightly - the Average Precision (AP) has increased from 0.51 to 0.58, another sign that we may have improved our model.
 
 ```{python}
 sklearn.metrics.PrecisionRecallDisplay.from_predictions(y_test, y_df_weighted, name="LogisticRegressionCV Weighted")
@@ -325,7 +325,7 @@ py$elig_joined %>%
 
 ## Conclusion
 
-For most predictive modeling tasks - especially if you are not trying to use any cutting-edge methods or dealing with very large datasets - there is no clear winner between R's tidymodels or Python's scikit-learn. They both support a very wide range of machine learning methods and make it relatively easy to optimize hyperparameters, evaluate model performance, and compare model specifications. There are differences in their APIs and in the ways that analysts construct modeling pipelines, but which one makes more sense to each user will likely come down to personal preference and familiarity with the language.
+For most predictive modeling tasks - especially if you are not trying to use any cutting-edge methods or dealing with very large datasets - there is no clear winner between R's tidymodels or Python's scikit-learn. They both support a very wide range of machine learning methods and make it relatively easy to optimize hyperparameters, evaluate model performance, and compare model specifications. There are differences in their user interfaces and in the ways that analysts construct modeling pipelines, but which one makes more sense to each user will likely come down to personal preference and familiarity with the language.
 
 While building this tutorial, however, one noticeable advantage for scikit-learn did become clear: it has a very extensive and detailed user guide, full of easy-to-follow examples, arguably making it easier to learn. The tidymodels framework may close this gap over time, but the wealth of existing scikit-learn documentation and the fact that the R predictive modeling landscape is relatively fragmented and has not fully coalesced around tidymodels could slow that down.
 

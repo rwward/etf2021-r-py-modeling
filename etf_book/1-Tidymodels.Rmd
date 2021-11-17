@@ -1,4 +1,4 @@
-# Modeling in R With Tidymodels
+# Modeling in R with Tidymodels
 
 ```{r setup, include=FALSE, cache = FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FALSE)
@@ -108,7 +108,7 @@ historical %>%
   labs(y = "",x = "Hall of Fame Indicator")
 ```
 
-Of note, we are dealing with imbalance classes which will take unique considerations. To have a quality model, we hope to achieve greater than ~93% accuracy since this is what we could do by simply saying that no one should be in the Hall of Fame. 
+Of note, we are dealing with imbalance classes, which will take unique considerations. To have a quality model, we hope to achieve greater than ~93% accuracy since this is what we could do by simply saying that no one should be in the Hall of Fame. 
 
 ```{r}
 historical %>% 
@@ -126,7 +126,7 @@ To begin the analysis, we will load the {tidymodels} library.
 library(tidymodels)
 ```
 
-We will split the data into a training (2/3s of the data) and testing set (1/3) of the data.
+We will split the data into a training (two-thirds of the data) and testing set (one-third) of the data.
 
 We set the seed so the analysis is reproducible.
 
@@ -187,7 +187,7 @@ baseball_recipe
 
 Now that we've prepared our data, we need to specify the model we wish to execute.
 
-Here we identify the model type, specify parameters which need tuning, and then set our desired 'engine' (essentially, the modeling algorithm).
+Here we identify the model type, specify parameters that need tuning, and then set our desired 'engine' (essentially, the modeling algorithm).
 
 ```{r}
 lr_mod <-
@@ -216,7 +216,7 @@ baseball_workflow
 
 This step not only executes the model building procedure, but also tunes the penalty hyperparameter by running the model with every penalty option in a specified search grid.
 
-First we specify the parameters and search grids that we'll use for tuning.
+First, we specify the parameters and search grids that we'll use for tuning.
 
 ```{r}
 lr_reg_grid <- tibble(penalty = 10^seq(-4, -1, length.out = 30))
@@ -252,7 +252,7 @@ lr_validation
 ```
 
 
-Here, we extract out the best 25 models based on accuracy and plot them vs the penalty from the tuning parameter grid.
+Here, we extract out the best 25 models based on accuracy and plot them versus the penalty from the tuning parameter grid.
 
 ```{r}
 lr_validation %>% 
@@ -274,7 +274,7 @@ lr_best <-
   slice(7)
 ```
 
-We show the ROC curve for the selected model.
+We show the Receiver Operator Characteristic (ROC) curve for the selected model.
 
 ```{r}
 lr_validation %>% 

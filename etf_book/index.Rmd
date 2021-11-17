@@ -53,13 +53,14 @@ We assume you have:
 
 Do your best to follow along.  We are happy to answer questions.  This presentation is available here  [MORS ETF  2021](https://dustysturner.com/MORS_ETF_2021/)
 
-## Distance Learning Challenges
+## Tutorial Challenges
 
-1. Don't be afraid to ask questions - both verbally and in chat.
-2. If you miss something we said, it is likely others have too - you'll be helping them by speaking up.
-3. Its difficult to know how we should pace the class, so please communicate!
+1. We recognize everyone has different statistical and coding backgrounds.
+2. Don't be afraid to ask questions.
+3. If you miss something we said, it is likely others have too - you'll be helping them by speaking up.
+4. It's difficult to know how we should pace the class, so please communicate!
 
-## Endstate
+## End State
 
 1. Students generally understand the modeling process in R and Python;
 2. Students have access to resources to learn more.
@@ -107,7 +108,7 @@ Data Science
 - Operations Research Systems Analyst at the Center for Army Analysis (CAA) and Army Leader Dashboard/Vantage PM team
 
 
-## Lets Get Started...
+## Let's Get Started...
 
 ### Prerequisite Packages
 

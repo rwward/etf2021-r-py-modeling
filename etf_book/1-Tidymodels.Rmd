@@ -1,7 +1,7 @@
 # Modeling in R with Tidymodels
 
-```{r setup, include=FALSE, cache = FALSE}
-knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FALSE)
+```{r, include=FALSE, cache = FALSE}
+# knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FALSE)
 library(tidymodels)
 ```
 

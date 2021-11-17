@@ -1,4 +1,5 @@
 bookdown::gitbook:
+  # css: style.css
 #  split_by: 'section'
 #  split_by: 'section+number'
 #  split_by: 'none'
@@ -8,5 +9,6 @@ bookdown::gitbook:
     toc:
       collapse: none
       before: |
-        <li><a href = "https://dustysturner.com/MORS_ETF_2021/">Tutorial Home</a></li>
+        <center><li><a href = "https://dustysturner.com/MORS_ETF_2021/">Tutorial Home</a></li>
+        <img src="img/caa_seal.png" width="80"></center>
   toc_depth: 2

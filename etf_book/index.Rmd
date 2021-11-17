@@ -2,7 +2,9 @@
 title: "Modeling in R and Python"
 author: "MAJ Dusty Turner and Mr Robert Ward"
 date: "8 DEC 2021"
-output: bookdown::gitbook
+# output: 
+#   bookdown::gitbook:
+#     css: "style.css"
 # output:
 #   bookdown::html_book:
 #     theme: united

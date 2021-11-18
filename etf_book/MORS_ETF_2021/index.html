@@ -6,7 +6,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Modeling in R and Python</title>
   <meta name="description" content="Modeling in R and Python" />
-  <meta name="generator" content="bookdown 0.23 and GitBook 2.6.7" />
+  <meta name="generator" content="bookdown 0.24 and GitBook 2.6.7" />
 
   <meta property="og:title" content="Modeling in R and Python" />
   <meta property="og:type" content="book" />
@@ -31,9 +31,10 @@
   
   
 
-
-<script src="libs/header-attrs-2.10/header-attrs.js"></script>
+<link rel="next" href="2-modeling-in-r-with-tidymodels.html"/>
+<script src="libs/header-attrs-2.11/header-attrs.js"></script>
 <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
 <link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
 <link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
@@ -49,9 +50,16 @@
 
 
 
-
 <link href="libs/anchor-sections-1.0.1/anchor-sections.css" rel="stylesheet" />
 <script src="libs/anchor-sections-1.0.1/anchor-sections.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<link href="libs/datatables-css-0.0.0/datatables-crosstalk.css" rel="stylesheet" />
+<script src="libs/datatables-binding-0.19/datatables.js"></script>
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.min.css" rel="stylesheet" />
+<link href="libs/dt-core-1.10.20/css/jquery.dataTables.extra.css" rel="stylesheet" />
+<script src="libs/dt-core-1.10.20/js/jquery.dataTables.min.js"></script>
+<link href="libs/crosstalk-1.1.1/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.1.1/js/crosstalk.min.js"></script>
 
 
 <style type="text/css">
@@ -136,15 +144,42 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <img src="img/caa_seal.png" width="80"></center>
 
 <li class="divider"></li>
-<li class="chapter" data-level="1" data-path="index.html"><a href="#class-introduction"><i class="fa fa-check"></i><b>1</b> Class Introduction</a>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Class Introduction</a>
 <ul>
-<li class="chapter" data-level="1.1" data-path="index.html"><a href="#topics-class-structure"><i class="fa fa-check"></i><b>1.1</b> Topics &amp; Class Structure</a></li>
-<li class="chapter" data-level="1.2" data-path="index.html"><a href="#software-prerequisites"><i class="fa fa-check"></i><b>1.2</b> Software Prerequisites</a></li>
-<li class="chapter" data-level="1.3" data-path="index.html"><a href="#human-prerequisites"><i class="fa fa-check"></i><b>1.3</b> Human Prerequisites</a></li>
-<li class="chapter" data-level="1.4" data-path="index.html"><a href="#tutorial-challenges"><i class="fa fa-check"></i><b>1.4</b> Tutorial Challenges</a></li>
-<li class="chapter" data-level="1.5" data-path="index.html"><a href="#end-state"><i class="fa fa-check"></i><b>1.5</b> End State</a></li>
-<li class="chapter" data-level="1.6" data-path="index.html"><a href="#instructors-introduction"><i class="fa fa-check"></i><b>1.6</b> Instructors Introduction</a></li>
-<li class="chapter" data-level="1.7" data-path="index.html"><a href="#lets-get-started"><i class="fa fa-check"></i><b>1.7</b> Let’s Get Started…</a></li>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#topics-class-structure"><i class="fa fa-check"></i><b>1.1</b> Topics &amp; Class Structure</a></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#software-prerequisites"><i class="fa fa-check"></i><b>1.2</b> Software Prerequisites</a></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#human-prerequisites"><i class="fa fa-check"></i><b>1.3</b> Human Prerequisites</a></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#tutorial-challenges"><i class="fa fa-check"></i><b>1.4</b> Tutorial Challenges</a></li>
+<li class="chapter" data-level="1.5" data-path="index.html"><a href="index.html#end-state"><i class="fa fa-check"></i><b>1.5</b> End State</a></li>
+<li class="chapter" data-level="1.6" data-path="index.html"><a href="index.html#instructors-introduction"><i class="fa fa-check"></i><b>1.6</b> Instructors Introduction</a></li>
+<li class="chapter" data-level="1.7" data-path="index.html"><a href="index.html#lets-get-started"><i class="fa fa-check"></i><b>1.7</b> Let’s Get Started…</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="2-modeling-in-r-with-tidymodels.html"><a href="2-modeling-in-r-with-tidymodels.html"><i class="fa fa-check"></i><b>2</b> Modeling in R with Tidymodels</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="2-modeling-in-r-with-tidymodels.html"><a href="2-modeling-in-r-with-tidymodels.html#tidymodels-packages"><i class="fa fa-check"></i><b>2.1</b> Tidymodels Packages</a></li>
+<li class="chapter" data-level="2.2" data-path="2-modeling-in-r-with-tidymodels.html"><a href="2-modeling-in-r-with-tidymodels.html#explore-data"><i class="fa fa-check"></i><b>2.2</b> Explore Data</a></li>
+<li class="chapter" data-level="2.3" data-path="2-modeling-in-r-with-tidymodels.html"><a href="2-modeling-in-r-with-tidymodels.html#split-data"><i class="fa fa-check"></i><b>2.3</b> Split Data</a></li>
+<li class="chapter" data-level="2.4" data-path="2-modeling-in-r-with-tidymodels.html"><a href="2-modeling-in-r-with-tidymodels.html#prepare-data"><i class="fa fa-check"></i><b>2.4</b> Prepare Data</a></li>
+<li class="chapter" data-level="2.5" data-path="2-modeling-in-r-with-tidymodels.html"><a href="2-modeling-in-r-with-tidymodels.html#specify-model"><i class="fa fa-check"></i><b>2.5</b> Specify Model</a></li>
+<li class="chapter" data-level="2.6" data-path="2-modeling-in-r-with-tidymodels.html"><a href="2-modeling-in-r-with-tidymodels.html#create-workflow"><i class="fa fa-check"></i><b>2.6</b> Create Workflow</a></li>
+<li class="chapter" data-level="2.7" data-path="2-modeling-in-r-with-tidymodels.html"><a href="2-modeling-in-r-with-tidymodels.html#specify-grid-of-training-parameters"><i class="fa fa-check"></i><b>2.7</b> Specify Grid of Training Parameters</a></li>
+<li class="chapter" data-level="2.8" data-path="2-modeling-in-r-with-tidymodels.html"><a href="2-modeling-in-r-with-tidymodels.html#train-model"><i class="fa fa-check"></i><b>2.8</b> Train Model</a></li>
+<li class="chapter" data-level="2.9" data-path="2-modeling-in-r-with-tidymodels.html"><a href="2-modeling-in-r-with-tidymodels.html#build-model-on-all-training-data-test-on-validation-set"><i class="fa fa-check"></i><b>2.9</b> Build Model on all Training Data, Test on Validation Set</a></li>
+<li class="chapter" data-level="2.10" data-path="2-modeling-in-r-with-tidymodels.html"><a href="2-modeling-in-r-with-tidymodels.html#change-model-to-random-forest"><i class="fa fa-check"></i><b>2.10</b> Change Model to Random Forest</a></li>
+<li class="chapter" data-level="2.11" data-path="2-modeling-in-r-with-tidymodels.html"><a href="2-modeling-in-r-with-tidymodels.html#build-model-on-all-training-and-validation-data-using-the-best-model"><i class="fa fa-check"></i><b>2.11</b> Build Model on all Training and Validation Data Using the Best Model</a></li>
+<li class="chapter" data-level="2.12" data-path="2-modeling-in-r-with-tidymodels.html"><a href="2-modeling-in-r-with-tidymodels.html#make-predictions-with-new-data"><i class="fa fa-check"></i><b>2.12</b> Make Predictions with New Data</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="3-modeling-in-python-with-scikit-learn.html"><a href="3-modeling-in-python-with-scikit-learn.html"><i class="fa fa-check"></i><b>3</b> Modeling in Python with scikit-learn</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="3-modeling-in-python-with-scikit-learn.html"><a href="3-modeling-in-python-with-scikit-learn.html#scikit-learn-overview"><i class="fa fa-check"></i><b>3.1</b> scikit-learn Overview</a></li>
+<li class="chapter" data-level="3.2" data-path="3-modeling-in-python-with-scikit-learn.html"><a href="3-modeling-in-python-with-scikit-learn.html#explore-data-1"><i class="fa fa-check"></i><b>3.2</b> Explore Data</a></li>
+<li class="chapter" data-level="3.3" data-path="3-modeling-in-python-with-scikit-learn.html"><a href="3-modeling-in-python-with-scikit-learn.html#split-data-1"><i class="fa fa-check"></i><b>3.3</b> Split Data</a></li>
+<li class="chapter" data-level="3.4" data-path="3-modeling-in-python-with-scikit-learn.html"><a href="3-modeling-in-python-with-scikit-learn.html#define-a-pipeline"><i class="fa fa-check"></i><b>3.4</b> Define a Pipeline</a></li>
+<li class="chapter" data-level="3.5" data-path="3-modeling-in-python-with-scikit-learn.html"><a href="3-modeling-in-python-with-scikit-learn.html#fit-the-model-using-the-pipeline"><i class="fa fa-check"></i><b>3.5</b> Fit the Model (Using the Pipeline)</a></li>
+<li class="chapter" data-level="3.6" data-path="3-modeling-in-python-with-scikit-learn.html"><a href="3-modeling-in-python-with-scikit-learn.html#score-and-evaluate-the-model"><i class="fa fa-check"></i><b>3.6</b> Score and Evaluate the Model</a></li>
+<li class="chapter" data-level="3.7" data-path="3-modeling-in-python-with-scikit-learn.html"><a href="3-modeling-in-python-with-scikit-learn.html#try-another-method"><i class="fa fa-check"></i><b>3.7</b> Try another method</a></li>
+<li class="chapter" data-level="3.8" data-path="3-modeling-in-python-with-scikit-learn.html"><a href="3-modeling-in-python-with-scikit-learn.html#predict-on-eligible-data"><i class="fa fa-check"></i><b>3.8</b> Predict on Eligible Data</a></li>
+<li class="chapter" data-level="3.9" data-path="3-modeling-in-python-with-scikit-learn.html"><a href="3-modeling-in-python-with-scikit-learn.html#conclusion"><i class="fa fa-check"></i><b>3.9</b> Conclusion</a></li>
 </ul></li>
 </ul>
 
@@ -192,7 +227,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <ol style="list-style-type: decimal">
 <li>R 3.6.x or newer</li>
 <li>RStudio 1.2.x or newer</li>
-<li>Python (version x)</li>
+<li>Python 3.6 or newer</li>
+<li>scikit-learn 1.0.0 or newer</li>
 </ol>
 </div>
 <div id="human-prerequisites" class="section level2" number="1.3">
@@ -281,10 +317,8 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <h2><span class="header-section-number">1.7</span> Let’s Get Started…</h2>
 <div id="prerequisite-packages" class="section level3" number="1.7.1">
 <h3><span class="header-section-number">1.7.1</span> Prerequisite Packages</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">&quot;tidyverse&quot;</span>, <span class="st">&quot;tidymodels&quot;</span>), <span class="at">dependencies =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
-<!-- ```{python eval = FALSE, include = TRUE} -->
-<!-- pip install something  -->
-<!-- ``` -->
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="index.html#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">install.packages</span>(<span class="fu">c</span>(<span class="st">&quot;tidyverse&quot;</span>, <span class="st">&quot;tidymodels&quot;</span>), <span class="at">dependencies =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb2-1"><a href="index.html#cb2-1" aria-hidden="true" tabindex="-1"></a>pip install scikit<span class="op">-</span>learn pandas matplotlib</span></code></pre></div>
 </div>
 <div id="follow-along" class="section level3" number="1.7.2">
 <h3><span class="header-section-number">1.7.2</span> Follow Along!</h3>
@@ -302,11 +336,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
         </div>
       </div>
 
-
+<a href="2-modeling-in-r-with-tidymodels.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
     </div>
   </div>
 <script src="libs/gitbook-2.6.7/js/app.min.js"></script>
-<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
 <script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
 <script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
@@ -337,7 +370,7 @@ gitbook.start({
 },
 "download": null,
 "search": {
-"engine": "lunr",
+"engine": "fuse",
 "options": null
 },
 "toc": {

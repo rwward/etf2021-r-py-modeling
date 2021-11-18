@@ -43,7 +43,8 @@ knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, cache = FAL
 
 1. R 3.6.x or newer
 2. RStudio 1.2.x or newer
-3. Python (version x)
+3. Python 3.6 or newer
+4. scikit-learn 1.0.0 or newer
 
 ## Human Prerequisites
 
@@ -121,9 +122,9 @@ install.packages(c("tidyverse", "tidymodels"), dependencies = TRUE)
 ```
 
 
-<!-- ```{python eval = FALSE, include = TRUE} -->
-<!-- pip install something  -->
-<!-- ``` -->
+```{python eval = FALSE, include = TRUE}
+pip install scikit-learn pandas matplotlib
+```
 
 ### Follow Along!
 

@@ -338,7 +338,7 @@ If our model accuracy metrics didn't even change, should we have even bothered w
 While the baseball example we used here is clearly not relevant our work, classification problems absolutely do show up in military applications of predictive modeling and machine learning, and unbalanced classes are fairly common: for example, computer vision algorithms used to detect features such as military vehicles in satellite imagery. In many such cases, analyts do not blindly trust computer models to detect the features of interest or to make decisions about what to do in response to a feature being detected. Instead, they are used to focus human experts on a smaller subset of cases where the algorithm has signalled that there is a high probability that there is something worth looking at. In such a case, false negatives are typically a much larger issue than false positives: we want the algorithm to flag as many of the true positives as possible, even if it also produces a moderate amount of false positives that human experts have to sift through. As long as it eliminates a large number of true negatives, it still saves humans time and effort, allowing them to work more efficiently.
 
 
-## Try another method
+## Try Another Method: Random Forest
 
 Like tidymodels, scikit-learn makes it easy to substitute another modeling method in place of logistic regression. Here, we insert a random forest classifier, using all default values.
 

@@ -45,6 +45,6 @@ accuracy-and-predictions
 confusion-matrices-and-unbalanced-classes
 the-decision-boundary-precision-recall-curves-and-receiver-operating-characteristic-roc-curves
 class-weights
-try-another-method
+try-another-method-random-forest
 predict-on-eligible-data
 conclusion

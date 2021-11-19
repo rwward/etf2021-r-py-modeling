@@ -264,7 +264,7 @@ lr_validation %>%
   scale_x_log10()
 ```
 
-We select the penalty that results in the highest accuracy.
+We select the smallest penalty that results in the highest accuracy.
 
 ```{r}
 lr_best <-

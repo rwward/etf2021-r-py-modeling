@@ -128,7 +128,13 @@ pip install scikit-learn pandas matplotlib
 
 ### Follow Along!
 
+Book:
+
 [https://dustysturner.com/MORS_ETF_2021/](https://dustysturner.com/MORS_ETF_2021/)
+
+Repo for data:
+
+[https://github.com/rwward/etf2021-r-py-modeling](https://github.com/rwward/etf2021-r-py-modeling)
 
 <center>
 ![](img/ETF_QR.png){ width=25% }

@@ -288,18 +288,6 @@ lr_validation %>%
 
 ## Build Model on all Training Data, Test on Validation Set
 
-Now that we've found the best parameter set, we need to apply this model to the entire training set.
-
-We'll make one tweak to our previous model specification: we specify our chosen penalty from the tuning process, instead of allowing the penalty to be tuned automatically. 
-
-```{r}
-last_lr_mod <-
-  logistic_reg(mode = "classification", penalty = lr_best$penalty, mixture = 1) %>% 
-  set_engine(engine = "glmnet")
-
-last_lr_mod
-```
-
 We update our workflow to have the best parameter set with the function `finalize_workflow()`.
 
 ```{r}
@@ -423,14 +411,6 @@ rf_validation %>%
   collect_predictions(parameters = rf_best) %>% 
   roc_curve(inducted, .pred_1) %>% 
   autoplot()
-```
-
-```{r}
-last_rf_mod <-
-  rand_forest(mode = "classification", mtry = rf_best$mtry, trees = rf_best$trees, min_n = rf_best$min_n) %>% 
-  set_engine(engine = "randomForest")
-
-last_rf_mod
 ```
 
 We update our workflow to have the best parameter set with the function `finalize_workflow()`.

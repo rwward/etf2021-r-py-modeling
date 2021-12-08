@@ -166,7 +166,7 @@ It looks like our model predicted that just `r py$counts[2]` out of `r length(py
 
 
 
-While we already know that our model was 94% accurate in the test set, it's also useful to compare the predictions to the actual y_test values with a confusion matrix, especially in a classification problem like ours with just two classes - and even more so when the classes are highly unbalanced. In this situation, a predictive model can often score very well by simply predicting the more popular class (here, the negative result of zero or "not inducted into the Hall of Fame") in nearly every case.
+While we already know that our model was almost 93% accurate in the test set, it's also useful to compare the predictions to the actual y_test values with a confusion matrix, especially in a classification problem like ours with just two classes - and even more so when the classes are highly unbalanced. In this situation, a predictive model can often score very well by simply predicting the more popular class (here, the negative result of zero or "not inducted into the Hall of Fame") in nearly every case.
 
 `sklearn.metrics.confusion_matrix()` will produce a confusion matrix as a numpy array; this is useful for further processing, but not especially easy to read.
 

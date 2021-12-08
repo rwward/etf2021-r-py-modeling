@@ -133,10 +133,14 @@ Book:
 <https://rwward.github.io/etf2021-r-py-modeling/>
 
 <center>
-![](img/qr_code_github_pages_etf_link.png){ width=25% }
+![](img/qr_code_github_pages_etf_link.png){ width=50% }
 </center>
 
 
 GitHub repo for data and code:
 
 <https://github.com/rwward/etf2021-r-py-modeling>
+
+<center>
+![](img/etf_repo_qr_code.png){ width=50% }
+</center>

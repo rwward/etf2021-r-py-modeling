@@ -1,6 +1,6 @@
 ---
 title: "Modeling in R and Python"
-author: "MAJ Dusty Turner and Mr Robert Ward"
+author: "MAJ Dusty Turner and Mr. Robert Ward"
 date: "8 DEC 2021"
 # output: 
 #   bookdown::gitbook:
@@ -56,7 +56,7 @@ We assume you have:
 
 Let's take an informal poll to see everyone's experience / comfort level with these topics.
 
-Do your best to follow along.  We are happy to answer questions.  This presentation is available here  [MORS ETF  2021](https://dustysturner.com/MORS_ETF_2021/)
+Do your best to follow along.  We are happy to answer questions.  This presentation is available at <https://rwward.github.io/etf2021-r-py-modeling/>.
 
 ## Tutorial Challenges
 
@@ -130,12 +130,13 @@ pip install scikit-learn pandas matplotlib
 
 Book:
 
-[https://dustysturner.com/MORS_ETF_2021/](https://dustysturner.com/MORS_ETF_2021/)
-
-Repo for data:
-
-[https://github.com/rwward/etf2021-r-py-modeling](https://github.com/rwward/etf2021-r-py-modeling)
+<https://rwward.github.io/etf2021-r-py-modeling/>
 
 <center>
-![](img/ETF_QR.png){ width=25% }
+![](img/qr_code_github_pages_etf_link.png){ width=25% }
 </center>
+
+
+GitHub repo for data and code:
+
+<https://github.com/rwward/etf2021-r-py-modeling>

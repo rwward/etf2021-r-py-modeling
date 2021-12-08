@@ -1,1 +1,1 @@
-# etf2021-r-py-modeling
+Tutorial website: <https://rwward.github.io/etf2021-r-py-modeling/>

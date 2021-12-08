@@ -41,6 +41,7 @@ split-data-1
 define-a-pipeline
 fit-the-model-using-the-pipeline
 score-and-evaluate-the-model
+coefficients
 accuracy-and-predictions
 confusion-matrices-and-unbalanced-classes
 the-decision-boundary-precision-recall-curves-and-receiver-operating-characteristic-roc-curves

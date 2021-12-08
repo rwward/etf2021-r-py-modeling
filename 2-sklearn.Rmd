@@ -143,6 +143,19 @@ In some cases, it may be a better practice not to allow an algorithm to make all
 
 ## Score and Evaluate the Model
 
+```{python}
+import numpy as np
+
+coefs = pipe_scale_lr_lasso.named_steps['logisticregressioncv'].coef_
+
+coef_summary = pd.DataFrame(coefs.transpose(), columns = ['coefs'], index = X_train.columns)
+coef_summary['exp_coefs'] = np.exp(coef_summary['coefs'])
+
+coef_summary
+```
+
+
+
 ### Accuracy and Predictions
 
 The most basic way to assess the performance of a fitted scikit-learn model is the `score()` function, with the test set as inputs. This uses the fitted model to predict on the test set and returns the proportion of correct predictions. Our model has nearly 93% accuracy, which sounds good, although we'll dive a little deeper into the results below.

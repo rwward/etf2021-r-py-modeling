@@ -118,7 +118,7 @@ Data Science
 ### Prerequisite Packages
 
 ```{r eval=FALSE, include=TRUE}
-install.packages(c("tidyverse", "tidymodels"), dependencies = TRUE)
+install.packages(c("tidyverse", "tidymodels", "reticulate", "glmnet", "randomForest"), dependencies = TRUE)
 ```
 
 

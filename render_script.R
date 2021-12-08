@@ -1,7 +1,9 @@
 library(bookdown)
 # bookdown::render_book("Intermediate_R.Rmd", "bookdown::gitbook",output_dir = "MORS_ETF_2020",clean_envir = TRUE)
 
-bookdown::render_book(input = "index.Rmd", output_format = "bookdown::gitbook",output_dir = "MORS_ETF_2021")
+# unlink("docs", recursive = T)
+
+bookdown::render_book(input = "index.Rmd", output_format = "bookdown::gitbook",output_dir = "docs")
 
 # bookdown::render_book(input = "index.Rmd", output_format = "bookdown::bookdown_site",output_dir = "MORS_ETF_2021")
 

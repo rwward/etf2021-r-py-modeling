@@ -306,6 +306,14 @@ last_lr_fit <-
   last_fit(data_split)
 ```
 
+To look at the model output, we can 'tidy()' the 'fit()'
+
+```{r}
+last_lr_workflow %>% 
+  fit(data = historical) %>% 
+  tidy()
+```
+
 We can see the performance of the model below in the next two outputs.
 
 ```{r}
@@ -448,7 +456,7 @@ last_rf_workflow %>%
 And we can take a view look at the ROC curve of our final model.
 
 ```{r}
-last_lr_fit %>% 
+last_rf_fit %>% 
   collect_predictions() %>% 
   roc_curve(inducted, .pred_1) %>% 
   autoplot()

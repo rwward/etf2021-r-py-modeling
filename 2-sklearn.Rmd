@@ -210,9 +210,12 @@ tp <- py$cm_array[2, 2]
 Fortunately, scikit-learn will also generate a much prettier and easier-to-read confusion matrix, with the help of `matplotlib.pyplot`. As expected, our model seriously underpredicted Hall of Fame induction: we had just `r fp` false positives and `r fn` false negatives! With `r tp` true positives, this means that we correctly predicted less than 25% of the actual Hall of Fame inductees in the test set. This makes our model look quite a bit less useful than the accuracy figure alone might have led us to believe.
 
 ```{python}
+
 import matplotlib.pyplot as plt
 
-sklearn.metrics.ConfusionMatrixDisplay.from_predictions(y_test, y_pred)
+fig, ax = sklearn.metrics.ConfusionMatrixDisplay.from_predictions(y_test, y_pred)
+plt.savefig('pyplot.png')
+
 plt.show()
 ```
 
